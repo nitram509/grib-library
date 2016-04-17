@@ -8,7 +8,7 @@ import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
  * @author Pauw
  *
  */
-public class Grib2SectionReader {
+class Grib2SectionReader {
 
 	private static final int POSITION_LENGTH_1 = 0;
 	private static final int POSITION_LENGTH_2 = 1;

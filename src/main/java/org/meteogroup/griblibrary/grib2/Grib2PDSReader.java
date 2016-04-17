@@ -18,7 +18,7 @@ import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
  *
  */
 @Slf4j
-public class Grib2PDSReader extends Grib2SectionReader {
+class Grib2PDSReader extends Grib2SectionReader {
 	
 	private static final int SECTIONID = 4;
 

@@ -12,7 +12,7 @@ import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
  * @author Pauw
  * Reads out the Grib2 Identification section 
  */
-public class Grib2IDSReader extends Grib2SectionReader{
+class Grib2IDSReader extends Grib2SectionReader{
 
 	private static final int SECTIONID = 1;
 	

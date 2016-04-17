@@ -1,6 +1,13 @@
 package org.meteogroup.griblibrary.grib2.pdstemplate;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
+import org.meteogroup.griblibrary.grib2.model.producttemplates.HorizontalLevelTemplate;
+import org.meteogroup.griblibrary.grib2.model.producttemplates.HorizontalLevelTemplate.HorizontalLevelTimeUnit;
+import org.meteogroup.griblibrary.grib2.pdstemplates.HorizontalLevelTemplateReader;
+import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,15 +16,7 @@ import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
-import org.meteogroup.griblibrary.grib2.Grib2PDSReader;
-import org.meteogroup.griblibrary.grib2.model.producttemplates.HorizontalLevelTemplate;
-import org.meteogroup.griblibrary.grib2.model.producttemplates.HorizontalLevelTemplate.HorizontalLevelTimeUnit;
-import org.meteogroup.griblibrary.grib2.pdstemplates.HorizontalLevelTemplateReader;
-import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HorizontalLevelTemplateReaderTest {
 	
@@ -67,8 +66,8 @@ public class HorizontalLevelTemplateReaderTest {
 	private static final byte[] GOOD_HORIZONTALLEVEL_ARRAY() throws URISyntaxException, IOException {
 		String filename = "ecmwf-grib2-example-product-definition-section.grb";
 
-		String name = Grib2PDSReader.class.getResource(filename).toString();
-		File f = new File(Grib2PDSReader.class.getResource(filename).toURI());
+		String name = ClassLoader.getSystemClassLoader().getResource(filename).toString();
+		File f = new File(ClassLoader.getSystemClassLoader().getResource(filename).toURI());
 		if (!f.exists()) {
 			throw new IOException("file does not exist at " + name);
 		}

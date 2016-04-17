@@ -19,7 +19,7 @@ import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
  *
  */
 @Slf4j
-public class Grib2DRSReader extends Grib2SectionReader {
+class Grib2DRSReader extends Grib2SectionReader {
 	
 	public Grib2DRS readDRSValues(byte[] drsValues, int headerOffSet) throws GribReaderException {
 		

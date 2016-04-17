@@ -152,13 +152,11 @@ public class Grib2RecordReaderTest {
 		byte[] response = buffer.array();
 
 		final int HEADER_LENGTH = 16;
-		final int GRIB_VERSION = 2;
 		partReader = new FileChannelPartReader();
 		byte[] recordHeader = partReader.readPartOfFileChannel(fc, 0, HEADER_LENGTH);
 		Grib2Record record = new Grib2Record();
-		record.setLength((int) reader.readRecordLength(recordHeader));
-        record.setVersion(GRIB_VERSION);
-		 
+		record.setLength(reader.readRecordLength(recordHeader));
+
 		return reader.readCompleteRecord(record,response,HEADER_LENGTH );
 	};
 	

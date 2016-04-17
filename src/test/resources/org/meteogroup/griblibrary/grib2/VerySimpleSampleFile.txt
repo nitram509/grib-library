@@ -1,1 +1,1 @@
-ThisIsATest
+This file needs to be at least 16 byte long, to fit into test.

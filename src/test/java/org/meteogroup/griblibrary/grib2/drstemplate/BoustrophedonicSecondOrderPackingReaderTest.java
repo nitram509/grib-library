@@ -1,6 +1,11 @@
 package org.meteogroup.griblibrary.grib2.drstemplate;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.meteogroup.griblibrary.exception.GribReaderException;
+import org.meteogroup.griblibrary.grib2.drstemplates.BoustrophedonicSecondOrderPackingReader;
+import org.meteogroup.griblibrary.grib2.model.drstemplates.BoustrophedonicSecondOrderDRSTemplate;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,13 +14,7 @@ import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import org.meteogroup.griblibrary.exception.GribReaderException;
-import org.meteogroup.griblibrary.grib2.Grib2DRSReader;
-import org.meteogroup.griblibrary.grib2.drstemplates.BoustrophedonicSecondOrderPackingReader;
-import org.meteogroup.griblibrary.grib2.model.drstemplates.BoustrophedonicSecondOrderDRSTemplate;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BoustrophedonicSecondOrderPackingReaderTest {
 	

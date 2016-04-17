@@ -5,11 +5,15 @@ package org.meteogroup.griblibrary.grib;
  * @author Pauw
  *
  */
-public class GribRecord {
+public abstract class GribRecord {
 
 	protected long length;
-	protected int version;
-	
+	protected final int version;
+
+	protected GribRecord(int version) {
+		this.version = version;
+	}
+
 	public long getLength() {
         return length;
     }
@@ -22,7 +26,4 @@ public class GribRecord {
 		return version;
 	}
 
-	public void setVersion(int version) {
-		this.version = version;
-	}
 }

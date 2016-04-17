@@ -8,7 +8,7 @@ import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
 /**
  * Created by roijen on 23-Oct-15.
  */
-public class Grib1GDSReader {
+class Grib1GDSReader {
 
     private static final int POSITION_GDS_LENGTH_1 = 0;
     private static final int POSITION_GDS_LENGTH_2 = 1;
