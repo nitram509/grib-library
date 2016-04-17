@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by roijen on 21-Oct-15.
  */
-public class Grib1PDSReader {
+class Grib1PDSReader {
 
 
 

@@ -11,7 +11,7 @@ import org.meteogroup.griblibrary.grib2.model.Grib2LUS;
  * Reads out the grib2 local use section
  *
  */
-public class Grib2LUSReader extends Grib2SectionReader {
+class Grib2LUSReader extends Grib2SectionReader {
 	
 	private static final int SECTIONID = 2;
 	

@@ -7,7 +7,7 @@ import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
 
 import java.util.Arrays;
 
-public class Grib1BDSReader {
+class Grib1BDSReader {
 
     private static final int POSITION_BDS_LENGTH_1 = 0;
     private static final int POSITION_BDS_LENGTH_2 = 1;

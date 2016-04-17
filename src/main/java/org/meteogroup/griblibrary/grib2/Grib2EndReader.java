@@ -15,7 +15,7 @@ import org.meteogroup.griblibrary.grib2.model.Grib2Endsection;
  *
  */
 @Slf4j
-public class Grib2EndReader extends Grib2SectionReader {
+class Grib2EndReader extends Grib2SectionReader {
 	
 	public Grib2Endsection readEndValues(byte[] endValues, int headerOffSet) throws BinaryNumberConversionException, IOException{
 		if (this.checkEndSection(endValues)==false){

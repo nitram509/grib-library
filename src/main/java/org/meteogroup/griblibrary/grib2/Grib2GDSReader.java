@@ -12,7 +12,7 @@ import org.meteogroup.griblibrary.grib2.model.gdstemplates.GaussianGDSTemplate;
 import org.meteogroup.griblibrary.grib2.model.gdstemplates.RegularLatLonGDSTemplate;
 import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
 
-public class Grib2GDSReader extends Grib2SectionReader {
+class Grib2GDSReader extends Grib2SectionReader {
 
 	private static final int SECTIONID = 3;
 	

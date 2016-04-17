@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.meteogroup.griblibrary.util.LatLon;
+import org.meteogroup.griblibrary.gis.LatLon;
 
 /**
  * Created by roijen on 23-Oct-15.

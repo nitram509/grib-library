@@ -1,7 +1,6 @@
 package org.meteogroup.griblibrary.grib2.model;
 
 import org.meteogroup.griblibrary.grib2.model.gdstemplates.GDSTemplate;
-import org.meteogroup.griblibrary.util.LatLon;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

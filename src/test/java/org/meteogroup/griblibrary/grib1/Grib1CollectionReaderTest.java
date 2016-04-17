@@ -45,18 +45,9 @@ public class Grib1CollectionReaderTest {
         collectionReader = new Grib1CollectionReader();
     }
 
-    @Test(dataProvider = "simpleFileLocation")
-    public void getAFileChannelFromAFileName(String fileLocation) throws IOException {
-        String fileName = getClass().getResource(fileLocation).getPath();
-        FileChannel channel = collectionReader.getFileChannelFromURL(fileName);
-        assertThat(channel).isNotNull();
-        assertThat(collectionReader.getGribRecordOffset()).isEqualTo(0l);
-        assertThat(collectionReader.getFileLength()).isGreaterThan(0);
-    }
-
     @Test(dataProvider = "notExistingFileLocation", expectedExceptions = FileNotFoundException.class)
-    public void getAFileChannelFromANotExistingFileName(String fileLocation) throws IOException {
-        collectionReader.getFileChannelFromURL(fileLocation);
+    public void getAFileChannelFromANotExistingFileName(String fileLocation) throws GribReaderException, FileNotFoundException {
+        collectionReader.readAllRecords(fileLocation);
     }
 
     @Test
@@ -64,12 +55,9 @@ public class Grib1CollectionReaderTest {
 
         collectionReader.partReader = mock(FileChannelPartReader.class);
         collectionReader.recordReader = mock(Grib1RecordReader.class);
-        collectionReader.fileLength = 16;
-        collectionReader.gribRecordOffset = 0;
 
         when(collectionReader.partReader.readPartOfFileChannel(any(FileChannel.class), anyInt(), anyInt())).thenReturn(SIMULATED_BYTE_ARRAY);
 
-        when(collectionReader.recordReader.checkIfGribFileIsValidGrib1(any(byte[].class))).thenReturn(true);
         when(collectionReader.recordReader.readRecordLength(any(byte[].class))).thenReturn(8);
 
         List<Grib1Record> records = collectionReader.readAllRecords(SIMULATED_FILE_CHANNEL());

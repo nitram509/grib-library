@@ -1,6 +1,5 @@
 package org.meteogroup.griblibrary.util;
 
-import org.meteogroup.griblibrary.grib1.Grib1BDSReader;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -55,10 +54,10 @@ public class BitReaderTest {
    
 
     private static final byte[] GOOD_BDS_VALUES_ARRAY() throws URISyntaxException, IOException {
-        String filename = "/org/meteogroup/griblibrary/grib1/ecmwf-grib1-example-binary-data-section.grb";
+        String filename = "org/meteogroup/griblibrary/grib1/ecmwf-grib1-example-binary-data-section.grb";
 
-        String name = Grib1BDSReader.class.getResource(filename).toString();
-        File f = new File(Grib1BDSReader.class.getResource(filename).toURI());
+        String name = ClassLoader.getSystemClassLoader().getResource(filename).toString();
+        File f = new File(ClassLoader.getSystemClassLoader().getResource(filename).toURI());
         if (!f.exists()) {
             throw new IOException("file does not exist at " + name);
         }

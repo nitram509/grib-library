@@ -1,4 +1,4 @@
-package org.meteogroup.griblibrary.util;
+package org.meteogroup.griblibrary.gis;
 
 /**
  * Created by roijen on 26-Oct-15.

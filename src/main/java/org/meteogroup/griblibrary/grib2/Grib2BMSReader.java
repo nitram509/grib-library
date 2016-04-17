@@ -15,7 +15,7 @@ import org.meteogroup.griblibrary.grib2.model.Grib2BMS;
  *
  */
 @Slf4j
-public class Grib2BMSReader extends Grib2SectionReader {
+class Grib2BMSReader extends Grib2SectionReader {
 	
 	private static final int SECTIONID = 6;
 	

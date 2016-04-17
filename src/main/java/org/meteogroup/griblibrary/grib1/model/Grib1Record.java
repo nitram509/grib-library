@@ -16,8 +16,13 @@ import org.meteogroup.griblibrary.grib.GribRecord;
 @ToString
 public class Grib1Record extends GribRecord {
 
+    private static final int GRIB_VERSION_1 = 1;
+
     Grib1PDS pds = new Grib1PDS();
     Grib1GDS gds = new Grib1GDS();
     Grib1BDS bds = new Grib1BDS();
 
+    public Grib1Record() {
+        super(GRIB_VERSION_1);
+    }
 }
