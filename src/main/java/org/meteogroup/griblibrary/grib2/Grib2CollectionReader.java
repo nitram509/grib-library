@@ -15,6 +15,8 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.meteogroup.griblibrary.grib2.Grib2RecordReader.checkIfGribFileIsValidGrib2;
+
 /**
  * Created by roijen on 28-Oct-15.
  */
@@ -46,45 +48,29 @@ public class Grib2CollectionReader extends AbstractGribCollectionReader {
     public List<Grib2Record> readAllRecords(RandomAccessFile randomAccessFile) throws GribReaderException {
         return (List<Grib2Record>) super.readAllRecords(randomAccessFile);
     }
-    
+
     @Override
     public List<Grib2Record> readAllRecords(FileChannel fileChannel) throws GribReaderException {
-        ArrayList<Grib2Record> response = new ArrayList<>();
-        long channelOffset = 0;
-        long channelSize;
+        long size;
         try {
-            channelSize = fileChannel.size();
+            size = fileChannel.size();
         } catch (IOException e) {
             throw new GribReaderException(e.getMessage(), e);
         }
-        while (channelOffset < channelSize) {
-            log.debug("next record");
-            byte[] recordHeader = partReader.readPartOfFileChannel(fileChannel, channelOffset, HEADER_LENGTH);
-            if (!recordReader.checkIfGribFileIsValidGrib2(recordHeader)) {
-                throw new GribReaderException("Attempted to read invalid grib record");
-            }
-            Grib2Record record = new Grib2Record();
-            record.setLength(recordReader.readRecordLength(recordHeader));
-            byte[] recordAsByteArray = partReader.readPartOfFileChannel(fileChannel, channelOffset, record.getLength());
-            record = recordReader.readCompleteRecord(record, recordAsByteArray, HEADER_LENGTH);
-            response.add(record);
-            channelOffset += recordReader.readRecordLength(recordHeader);
-        }
-        return response;
+        return readAllRecords(fileChannel, size);
     }
 
     @Override
     public List<Grib2Record> readAllRecords(ReadableByteChannel readableByteChannel, long channelSize) throws GribReaderException {
-        ArrayList<Grib2Record> response = new ArrayList<Grib2Record>();
-        long channelOffset = 0;
-        while (channelOffset < channelSize - HEADER_LENGTH) {
+        final ArrayList<Grib2Record> response = new ArrayList<>();
+        for (long channelOffset = 0; channelOffset < channelSize; ) {
 
             byte[] recordHeader = partReader.readPartOfFileChannel(readableByteChannel, HEADER_LENGTH);
             if (allBytesZero(recordHeader)) {
                 channelOffset += HEADER_LENGTH;
                 continue;
             }
-            if (!recordReader.checkIfGribFileIsValidGrib2(recordHeader)) {
+            if (!checkIfGribFileIsValidGrib2(recordHeader)) {
                 int attemptOffsetUpdate = 0;
                 for (byte b : recordHeader) {
                     if (b == 0) {
@@ -119,7 +105,7 @@ public class Grib2CollectionReader extends AbstractGribCollectionReader {
                 potentialResult[x] = recoveryBits[(x - HEADER_LENGTH) + attemptOffsetUpdate];
             }
         }
-        if (!recordReader.checkIfGribFileIsValidGrib2(potentialResult)) {
+        if (!checkIfGribFileIsValidGrib2(potentialResult)) {
             throw new GribReaderException("Unable to determine valid header");
         } else {
             return potentialResult;

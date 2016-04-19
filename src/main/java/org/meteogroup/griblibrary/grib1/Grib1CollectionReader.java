@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
 import org.meteogroup.griblibrary.exception.GribReaderException;
 import org.meteogroup.griblibrary.grib.AbstractGribCollectionReader;
-import org.meteogroup.griblibrary.grib.GribRecord;
 import org.meteogroup.griblibrary.grib1.model.Grib1Record;
 import org.meteogroup.griblibrary.util.FileChannelPartReader;
 
@@ -53,39 +52,19 @@ public class Grib1CollectionReader extends AbstractGribCollectionReader {
 
     @Override
     public List<Grib1Record> readAllRecords(FileChannel fileChannel) throws GribReaderException {
-        ArrayList<Grib1Record> response = new ArrayList<>();
-        long channelOffset = 0;
-        long channelSize;
+        long size;
         try {
-            channelSize = fileChannel.size();
+            size = fileChannel.size();
         } catch (IOException e) {
             throw new GribReaderException(e.getMessage(), e);
         }
-        while (channelOffset < channelSize) {
-
-            byte[] recordHeader = partReader.readPartOfFileChannel(fileChannel, channelOffset, HEADER_LENGTH);
-            if (!checkIfGribFileIsValidGrib1(recordHeader)) {
-                throw new GribReaderException("Attempted to read invalid grib record");
-            }
-            Grib1Record record = new Grib1Record();
-            try {
-                record.setLength(recordReader.readRecordLength(recordHeader));
-                byte[] recordAsByteArray = partReader.readPartOfFileChannel(fileChannel, channelOffset, record.getLength());
-                record = recordReader.readCompleteRecord(record, recordAsByteArray, HEADER_LENGTH);
-            } catch (BinaryNumberConversionException e) {
-                throw new GribReaderException(e.getMessage(), e);
-            }
-            response.add(record);
-            channelOffset += recordReader.readRecordLength(recordHeader);
-        }
-        return response;
+        return readAllRecords(fileChannel, size);
     }
 
     @Override
     public List<Grib1Record> readAllRecords(ReadableByteChannel readableByteChannel, long channelSize) throws GribReaderException {
-        ArrayList<Grib1Record> response = new ArrayList<Grib1Record>();
-        long channelOffset = 0;
-        while (channelOffset < channelSize - HEADER_LENGTH) {
+        ArrayList<Grib1Record> response = new ArrayList<>();
+        for (long channelOffset = 0; channelOffset < channelSize; ) {
 
             byte[] recordHeader = partReader.readPartOfFileChannel(readableByteChannel, HEADER_LENGTH);
             if (allBytesZero(recordHeader)) {
