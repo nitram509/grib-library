@@ -10,15 +10,16 @@ import org.testng.annotations.Test;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 /**
@@ -51,16 +52,15 @@ public class Grib2CollectionReaderTest {
         collectionReader.partReader = mock(FileChannelPartReader.class);
         collectionReader.recordReader = mock(Grib2RecordReader.class);
 
-        when(collectionReader.partReader.readPartOfFileChannel(any(FileChannel.class), anyInt(), anyInt())).thenReturn(SIMULATED_BYTE_ARRAY);
-
+        when(collectionReader.partReader.readPartOfFileChannel(any(ReadableByteChannel.class), anyLong())).thenReturn(SIMULATED_BYTE_ARRAY);
         when(collectionReader.recordReader.readRecordLength(any(byte[].class))).thenReturn(16L);
 
         List<Grib2Record> records;
 
-        records = collectionReader.readAllRecords(createFileChannelMock(16L));
+        records = collectionReader.readAllRecords(createReadableByteChannel(16), 16L);
         assertThat(records.size()).isEqualTo(1);
 
-        records = collectionReader.readAllRecords(createFileChannelMock(32L));
+        records = collectionReader.readAllRecords(createReadableByteChannel(32), 32L);
         assertThat(records.size()).isEqualTo(2);
     }
 
@@ -68,12 +68,21 @@ public class Grib2CollectionReaderTest {
 
     private static final byte[] SIMULATED_BYTE_ARRAY = new byte[]{'G', 'R', 'I', 'B', 19, 84, -26, 2};
 
-    private static FileChannel createFileChannelMock(long fileLength) throws IOException {
-        String fileName = Grib2CollectionReaderTest.class.getResource("VerySimpleSampleFile.txt").getPath();
-        RandomAccessFile raf = new RandomAccessFile(fileName, "r");
-        FileChannel channel = raf.getChannel();
-        channel = spy(channel);
-        when(channel.size()).thenReturn(fileLength);
-        return channel;
+    private static ReadableByteChannel createReadableByteChannel(int size) throws IOException {
+        return new ReadableByteChannel() {
+            @Override
+            public boolean isOpen() {
+                return true;
+            }
+
+            @Override
+            public void close() throws IOException { /* nothing to do */ }
+
+            @Override
+            public int read(ByteBuffer dst) throws IOException {
+                dst.put(SIMULATED_BYTE_ARRAY, 0, SIMULATED_BYTE_ARRAY.length);
+                return size;
+            }
+        };
     }
 }

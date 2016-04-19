@@ -72,9 +72,7 @@ public class Grib2RecordReader {
             bitmapSection = bmsReader.readBMSValues(recordAsByteArray, headerOffSet);
             headerOffSet += bitmapSection.getLength();
             dataSection = dsReader.readDSValues(recordAsByteArray, headerOffSet);
-        } catch (BinaryNumberConversionException e) {
-            throw new GribReaderException(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (BinaryNumberConversionException | IOException e) {
             throw new GribReaderException(e.getMessage(), e);
         }
         record.setIds(identificationSection);
