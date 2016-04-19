@@ -1,7 +1,7 @@
 package org.meteogroup.griblibrary.grib1;
 
 import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
-import org.meteogroup.griblibrary.grib1.model.Grib1PDS;
+import org.meteogroup.griblibrary.grib1.model.Grib1ProductDefinitionSection;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by roijen on 21-Oct-15.
  */
-public class Grib1PDSReaderTest {
+public class Grib1ProductDefinitionSectionReaderTest {
 
     private Grib1PDSReader pdsReader;
 
@@ -44,16 +44,16 @@ public class Grib1PDSReaderTest {
 
 
     @Test(dataProvider = "goodPDSDataSet")
-    public void testReadPDS(byte[] testArray, int headerOffSet, Grib1PDS expectedResponseObject) throws BinaryNumberConversionException {
-        Grib1PDS pds = pdsReader.readPDSValues(testArray,headerOffSet);
+    public void testReadPDS(byte[] testArray, int headerOffSet, Grib1ProductDefinitionSection expectedResponseObject) throws BinaryNumberConversionException {
+        Grib1ProductDefinitionSection pds = pdsReader.readPDSValues(testArray,headerOffSet);
         assertThat(pds).isEqualTo(expectedResponseObject);
     }
 
     private static final byte[] GOOD_PDS_ARRAY = new byte[]{0,0,28,-128,98,-111,-1,-128,41,112,28,100,15,8,7,0,0,1,6,0,0,0,0,0,21,0,0,0};
     private static final byte[] GOOD_PDS_ARRAY_WITH_HEADER = new byte[]{'G','R','I','B',19,84,-26,1,0,0,28,-128,98,-111,-1,-128,41,112,28,100,15,8,7,0,0,1,6,0,0,0,0,0,21,0,0,0};
 
-    private static final Grib1PDS GOOD_PDS_OBJECT(){
-        Grib1PDS pds = new Grib1PDS();
+    private static final Grib1ProductDefinitionSection GOOD_PDS_OBJECT(){
+        Grib1ProductDefinitionSection pds = new Grib1ProductDefinitionSection();
         pds.setPdsLenght(28);
         pds.setParameterTableVersionNumber(128);
         pds.setIdentificationOfCentre(98);

@@ -13,7 +13,7 @@ import lombok.ToString;
 @Setter
 @EqualsAndHashCode(exclude = {"packedValues"})
 @ToString(exclude = {"packedValues"})
-public class Grib1BDS {
+public class Grib1BinaryDataSection {
 
     private int bdsLength;
     private int binaryScaleFactor;

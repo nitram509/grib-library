@@ -1,7 +1,7 @@
 package org.meteogroup.griblibrary.grib1;
 
 import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
-import org.meteogroup.griblibrary.grib1.model.Grib1BDS;
+import org.meteogroup.griblibrary.grib1.model.Grib1BinaryDataSection;
 import org.meteogroup.griblibrary.util.BitChecker;
 import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
 
@@ -30,8 +30,8 @@ class Grib1BDSReader {
         return BytesToPrimitiveHelper.bytesToInteger(inputValues[POSITION_BDS_LENGTH_1 + offSet], inputValues[POSITION_BDS_LENGTH_2 + offSet], inputValues[POSITION_BDS_LENGTH_3 + offSet]);
     }
 
-    public Grib1BDS readBDSValues(byte[] inputValues, int offSet) throws BinaryNumberConversionException {
-        Grib1BDS objectToWriteInto = new Grib1BDS();
+    public Grib1BinaryDataSection readBDSValues(byte[] inputValues, int offSet) throws BinaryNumberConversionException {
+        Grib1BinaryDataSection objectToWriteInto = new Grib1BinaryDataSection();
         objectToWriteInto.setBdsLength(this.readBDSLength(inputValues,offSet));
 
         objectToWriteInto.setGridPointData(!BitChecker.testBit(inputValues[POSITION_BDS_FLAGS + offSet], GRID_OR_SPHERICAL_BIT));

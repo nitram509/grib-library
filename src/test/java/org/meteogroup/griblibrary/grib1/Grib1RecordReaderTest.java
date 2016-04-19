@@ -2,9 +2,9 @@ package org.meteogroup.griblibrary.grib1;
 
 import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
 import org.meteogroup.griblibrary.exception.GribReaderException;
-import org.meteogroup.griblibrary.grib1.model.Grib1BDS;
-import org.meteogroup.griblibrary.grib1.model.Grib1GDS;
-import org.meteogroup.griblibrary.grib1.model.Grib1PDS;
+import org.meteogroup.griblibrary.grib1.model.Grib1BinaryDataSection;
+import org.meteogroup.griblibrary.grib1.model.Grib1GridDescriptionSection;
+import org.meteogroup.griblibrary.grib1.model.Grib1ProductDefinitionSection;
 import org.meteogroup.griblibrary.grib1.model.Grib1Record;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -111,7 +111,7 @@ public class Grib1RecordReaderTest {
 
         when(reader.gdsReader.readGDSValues(any(byte[].class), anyInt())).thenReturn(LENGTH_ONLY_GDS());
 
-        when(reader.gdsReader.readGDSValues(any(byte[].class), anyInt())).thenReturn(new Grib1GDS());
+        when(reader.gdsReader.readGDSValues(any(byte[].class), anyInt())).thenReturn(new Grib1GridDescriptionSection());
 
         Grib1Record record = reader.readCompleteRecord(new Grib1Record(),SIMULATED_BYTE_ARRAY, SIMULATED_OFFSET);
 
@@ -119,34 +119,34 @@ public class Grib1RecordReaderTest {
 
         verify(reader.pdsReader, times(1)).readPDSValues(any(byte[].class), anyInt());
 
-        assertThat(record.getPds()).isNotNull();
+        assertThat(record.getProductDefinition()).isNotNull();
 
         verify(reader.gdsReader, times(1)).readGDSValues(any(byte[].class), anyInt());
 
-        assertThat(record.getGds()).isNotNull();
+        assertThat(record.getGridDescription()).isNotNull();
 
         verify(reader.bdsReader, times(1)).readBDSValues(any(byte[].class), anyInt());
 
-        assertThat(record.getGds()).isNotNull();
+        assertThat(record.getGridDescription()).isNotNull();
 
 
     }
 
 
-    private static final Grib1PDS LENGTH_ONLY_PDS(){
-        Grib1PDS pds = new Grib1PDS();
+    private static final Grib1ProductDefinitionSection LENGTH_ONLY_PDS(){
+        Grib1ProductDefinitionSection pds = new Grib1ProductDefinitionSection();
         pds.setPdsLenght(8);
         return pds;
     }
 
-    private static final Grib1GDS LENGTH_ONLY_GDS(){
-        Grib1GDS gds = new Grib1GDS();
+    private static final Grib1GridDescriptionSection LENGTH_ONLY_GDS(){
+        Grib1GridDescriptionSection gds = new Grib1GridDescriptionSection();
         gds.setGdsLenght(8);
         return gds;
     }
 
-    private static final Grib1BDS LENGTH_ONLY_BDS(){
-        Grib1BDS bds = new Grib1BDS();
+    private static final Grib1BinaryDataSection LENGTH_ONLY_BDS(){
+        Grib1BinaryDataSection bds = new Grib1BinaryDataSection();
         bds.setBdsLength(8);
         return bds;
     }

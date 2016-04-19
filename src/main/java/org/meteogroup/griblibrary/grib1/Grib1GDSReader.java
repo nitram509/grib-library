@@ -1,7 +1,7 @@
 package org.meteogroup.griblibrary.grib1;
 
 import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
-import org.meteogroup.griblibrary.grib1.model.Grib1GDS;
+import org.meteogroup.griblibrary.grib1.model.Grib1GridDescriptionSection;
 import org.meteogroup.griblibrary.util.BitChecker;
 import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
 
@@ -46,8 +46,8 @@ class Grib1GDSReader {
         return BytesToPrimitiveHelper.bytesToInteger(inputValues[POSITION_GDS_LENGTH_1 + offSet], inputValues[POSITION_GDS_LENGTH_2 + offSet], inputValues[POSITION_GDS_LENGTH_3 + offSet]);
     }
 
-    public Grib1GDS readGDSValues(byte[] inputValues, int offSet) throws BinaryNumberConversionException {
-        Grib1GDS objectToWriteInto= new Grib1GDS();
+    public Grib1GridDescriptionSection readGDSValues(byte[] inputValues, int offSet) throws BinaryNumberConversionException {
+        Grib1GridDescriptionSection objectToWriteInto= new Grib1GridDescriptionSection();
         objectToWriteInto.setGdsLenght(this.readGDSLength(inputValues, offSet));
         objectToWriteInto.setNumberOfVerticalsCoordinateParams((short) (inputValues[POSITION_GDS_NUMBER_OF_VERTICAL_COORDINATE_PARAMS + offSet] & BytesToPrimitiveHelper.BYTE_MASK));
         objectToWriteInto.setLocationOfVerticalCoordinateParams((short) (inputValues[POSITION_GDS_LOCATION_OF_VERTICAL_PARAMS + offSet] & BytesToPrimitiveHelper.BYTE_MASK));
@@ -83,7 +83,7 @@ class Grib1GDSReader {
         return (lat1 > lat2 ? lat1 : lat2) / 1000f;
     }
 
-    public Grib1GDS generateNisAndNumberOfPoints(Grib1GDS gds, byte[] inputValues, int offSet) throws BinaryNumberConversionException {
+    public Grib1GridDescriptionSection generateNisAndNumberOfPoints(Grib1GridDescriptionSection gds, byte[] inputValues, int offSet) throws BinaryNumberConversionException {
         int[] nis = new int[gds.getPointsAlongLongitudeMeridian()];
         int numberOfPoints = 0;
         for (int x = 0; x < gds.getPointsAlongLongitudeMeridian() ; x++){

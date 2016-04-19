@@ -1,7 +1,7 @@
 package org.meteogroup.griblibrary.grib1;
 
 import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
-import org.meteogroup.griblibrary.grib1.model.Grib1PDS;
+import org.meteogroup.griblibrary.grib1.model.Grib1ProductDefinitionSection;
 import org.meteogroup.griblibrary.util.BitChecker;
 import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
 
@@ -53,9 +53,9 @@ class Grib1PDSReader {
         return BytesToPrimitiveHelper.bytesToInteger(values[POSITION_PDS_LENGTH_1 + headerOffSet], values[POSITION_PDS_LENGTH_2 + headerOffSet], values[POSITION_PDS_LENGTH_3 + headerOffSet]);
     }
 
-    public Grib1PDS readPDSValues(byte[] values, int headerOffSet) throws BinaryNumberConversionException {
+    public Grib1ProductDefinitionSection readPDSValues(byte[] values, int headerOffSet) throws BinaryNumberConversionException {
 
-        Grib1PDS objectToReadInto = new Grib1PDS();
+        Grib1ProductDefinitionSection objectToReadInto = new Grib1ProductDefinitionSection();
         objectToReadInto.setPdsLenght(this.readPDSLength(values,headerOffSet));
         objectToReadInto.setParameterTableVersionNumber((short) (values[POSITION_PDS_TABLE_VERSION_NUMBER + headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
         objectToReadInto.setIdentificationOfCentre((short)(values[POSITION_PDS_IDENTIFICATION_OF_CENTRE+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
