@@ -1,7 +1,7 @@
 package org.meteogroup.griblibrary.grib1;
 
 import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
-import org.meteogroup.griblibrary.grib1.model.Grib1BDS;
+import org.meteogroup.griblibrary.grib1.model.Grib1BinaryDataSection;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by roijen on 27-Oct-15.
  */
-public class Grib1BDSReaderTest {
+public class Grib1BinaryDataSectionReaderTest {
 
     Grib1BDSReader bdsReader;
 
@@ -62,8 +62,8 @@ public class Grib1BDSReaderTest {
     }
 
     @Test(dataProvider = "goodBDSArrayForReadout")
-    public void testBDSReadout(byte[] inputValues, int offSet, Grib1BDS expectedObject) throws BinaryNumberConversionException {
-        Grib1BDS actualObject = bdsReader.readBDSValues(inputValues, offSet);
+    public void testBDSReadout(byte[] inputValues, int offSet, Grib1BinaryDataSection expectedObject) throws BinaryNumberConversionException {
+        Grib1BinaryDataSection actualObject = bdsReader.readBDSValues(inputValues, offSet);
         assertThat(actualObject).isEqualTo(expectedObject);
         assertThat(actualObject.getPackedValues()).isNotNull();
         assertThat(actualObject.getPackedValues().length).isEqualTo(actualObject.getBdsLength()-END_OF_META_DATA);
@@ -101,8 +101,8 @@ public class Grib1BDSReaderTest {
         return response;
     };
 
-    private static final Grib1BDS GOOD_EXAMPLE_SIMPLE_PACKING_BDS_OBJECT(){
-        Grib1BDS bds = new Grib1BDS();
+    private static final Grib1BinaryDataSection GOOD_EXAMPLE_SIMPLE_PACKING_BDS_OBJECT(){
+        Grib1BinaryDataSection bds = new Grib1BinaryDataSection();
         bds.setBdsLength(4281416);
         bds.setBinaryScaleFactor((short) -9);
         bds.setReferenceValue(208.2547f);

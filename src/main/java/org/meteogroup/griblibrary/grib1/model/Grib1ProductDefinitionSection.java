@@ -12,7 +12,7 @@ import lombok.ToString;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class Grib1PDS {
+public class Grib1ProductDefinitionSection {
 
     private int pdsLenght;
 

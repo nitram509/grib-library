@@ -13,7 +13,7 @@ import org.meteogroup.griblibrary.gis.LatLon;
 @Setter
 @EqualsAndHashCode(exclude = {"latLons", "pointsAlongLatitudeCircleForGaussian"})
 @ToString(exclude = {"latLons", "pointsAlongLatitudeCircleForGaussian"})
-public class Grib1GDS {
+public class Grib1GridDescriptionSection {
 
     private int gdsLenght;
     private int numberOfVerticalsCoordinateParams;

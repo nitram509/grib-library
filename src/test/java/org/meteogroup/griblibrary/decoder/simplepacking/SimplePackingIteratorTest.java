@@ -1,13 +1,9 @@
 package org.meteogroup.griblibrary.decoder.simplepacking;
 
-import org.meteogroup.griblibrary.grib1.model.Grib1BDS;
-import org.meteogroup.griblibrary.grib1.model.Grib1GDS;
-import org.meteogroup.griblibrary.grib1.model.Grib1PDS;
+import org.meteogroup.griblibrary.grib1.model.Grib1BinaryDataSection;
+import org.meteogroup.griblibrary.grib1.model.Grib1GridDescriptionSection;
+import org.meteogroup.griblibrary.grib1.model.Grib1ProductDefinitionSection;
 import org.meteogroup.griblibrary.grib1.model.Grib1Record;
-import org.meteogroup.griblibrary.grib2.model.Grib2DRS;
-import org.meteogroup.griblibrary.grib2.model.Grib2DS;
-import org.meteogroup.griblibrary.grib2.model.Grib2Record;
-import org.meteogroup.griblibrary.grib2.model.drstemplates.SimplePackingDRSTemplate;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -61,21 +57,21 @@ public class SimplePackingIteratorTest {
     private static final Grib1Record SIMPLE_GRIB_1_RECORD() throws IOException, URISyntaxException {
         Grib1Record record = new Grib1Record();
 
-        Grib1BDS bds = new Grib1BDS();
+        Grib1BinaryDataSection bds = new Grib1BinaryDataSection();
         bds.setBytesForDatum(BITS_PER_VALUE);
         bds.setPackedValues(SIMPLE_BYTE_ARRAY);
         bds.setBinaryScaleFactor(BINARY_SCALE_MINUS_6);
         bds.setReferenceValue(REFERENCE_VALUE_4707);
 
-        Grib1GDS gds = new Grib1GDS();
+        Grib1GridDescriptionSection gds = new Grib1GridDescriptionSection();
         gds.setNumberOfPoints(NUMBER_OF_POINTS);
 
-        Grib1PDS pds = new Grib1PDS();
+        Grib1ProductDefinitionSection pds = new Grib1ProductDefinitionSection();
         pds.setDecimalScaleFactor(FACTOR_DIVISION_1);
 
-        record.setBds(bds);
-        record.setGds(gds);
-        record.setPds(pds);
+        record.setBinaryData(bds);
+        record.setGridDescription(gds);
+        record.setProductDefinition(pds);
         return record;
     }
 

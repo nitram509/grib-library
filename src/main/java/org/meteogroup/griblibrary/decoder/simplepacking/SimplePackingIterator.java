@@ -5,10 +5,7 @@ import org.meteogroup.griblibrary.grib2.model.Grib2Record;
 import org.meteogroup.griblibrary.grib2.model.drstemplates.SimplePackingDRSTemplate;
 import org.meteogroup.griblibrary.util.BitReader;
 
-import java.util.Iterator;
 import java.util.PrimitiveIterator;
-import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
 
 /**
  * Created by roijen on 23-Nov-15.
@@ -26,8 +23,8 @@ public class SimplePackingIterator implements PrimitiveIterator.OfDouble {
     BitReader bitReader;
 
     public SimplePackingIterator(Grib1Record record){
-        initValues(record.getBds().getPackedValues(), record.getGds().getNumberOfPoints(), record.getBds().getBytesForDatum(), record.getPds().getDecimalScaleFactor(),
-                record.getBds().getBinaryScaleFactor(), record.getBds().getReferenceValue());
+        initValues(record.getBinaryData().getPackedValues(), record.getGridDescription().getNumberOfPoints(), record.getBinaryData().getBytesForDatum(), record.getProductDefinition().getDecimalScaleFactor(),
+                record.getBinaryData().getBinaryScaleFactor(), record.getBinaryData().getReferenceValue());
     }
 
     public SimplePackingIterator(Grib2Record record) {

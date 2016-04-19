@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
-import org.meteogroup.griblibrary.grib1.model.Grib1GDS;
+import org.meteogroup.griblibrary.grib1.model.Grib1GridDescriptionSection;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class Grib1GDSReaderTest {
+public class Grib1GridDescriptionSectionReaderTest {
 
 	Grib1GDSReader gdsReader;
 
@@ -68,8 +68,8 @@ public class Grib1GDSReaderTest {
 	}
 
 	@Test(dataProvider = "goodGDSDataSet")
-	public void testReadGDS(byte[] testArray, int headerOffSet, Grib1GDS expectedResponseObject) throws BinaryNumberConversionException {
-		Grib1GDS gds = gdsReader.readGDSValues(testArray,headerOffSet);
+	public void testReadGDS(byte[] testArray, int headerOffSet, Grib1GridDescriptionSection expectedResponseObject) throws BinaryNumberConversionException {
+		Grib1GridDescriptionSection gds = gdsReader.readGDSValues(testArray,headerOffSet);
 		assertThat(gds).isEqualTo(expectedResponseObject);
 	}
 
@@ -86,14 +86,14 @@ public class Grib1GDSReaderTest {
 	}
 
 	@Test(dataProvider = "testSetForGausianCoordinateReadOut")
-	public void testGaussianReadout(Grib1GDS objectToWriteInto, byte[] inputValues, int offSet, int[] expectedResult, int expectedLength) throws BinaryNumberConversionException {
-		Grib1GDS result = gdsReader.generateNisAndNumberOfPoints(objectToWriteInto, inputValues,offSet);
+	public void testGaussianReadout(Grib1GridDescriptionSection objectToWriteInto, byte[] inputValues, int offSet, int[] expectedResult, int expectedLength) throws BinaryNumberConversionException {
+		Grib1GridDescriptionSection result = gdsReader.generateNisAndNumberOfPoints(objectToWriteInto, inputValues,offSet);
 		assertThat(result.getNumberOfPoints()).isEqualTo(expectedLength);
 		assertThat(result.getPointsAlongLatitudeCircleForGaussian()).isEqualTo(expectedResult);
 	}
 
-	private static final Grib1GDS GOOD_GDS_OBJECT(){
-		Grib1GDS gds = new Grib1GDS();
+	private static final Grib1GridDescriptionSection GOOD_GDS_OBJECT(){
+		Grib1GridDescriptionSection gds = new Grib1GridDescriptionSection();
 		gds.setGdsLenght(2592);
 		gds.setNumberOfVerticalsCoordinateParams(0);
 		gds.setLocationOfVerticalCoordinateParams(33);
@@ -141,8 +141,8 @@ public class Grib1GDSReaderTest {
 	private static final int VALUE_FOR_NORTH_SOUTH_TEST1 = 89892;
 	private static final int VALUE_FOR_NORTH_SOUTH_TEST2 = -89892;
 
-	private static final Grib1GDS GDS_FOR_GAUSSIAN_COORDINATE_READOUT(){
-		Grib1GDS gds = new Grib1GDS();
+	private static final Grib1GridDescriptionSection GDS_FOR_GAUSSIAN_COORDINATE_READOUT(){
+		Grib1GridDescriptionSection gds = new Grib1GridDescriptionSection();
 		gds.setPointsAlongLongitudeMeridian((short) 3);
 		gds.setLocationOfVerticalCoordinateParams((short) 1);
 		return gds;

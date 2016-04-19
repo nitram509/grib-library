@@ -18,9 +18,9 @@ public class Grib1Record extends GribRecord {
 
     private static final int GRIB_VERSION_1 = 1;
 
-    Grib1PDS pds = new Grib1PDS();
-    Grib1GDS gds = new Grib1GDS();
-    Grib1BDS bds = new Grib1BDS();
+    Grib1ProductDefinitionSection productDefinition = new Grib1ProductDefinitionSection();
+    Grib1GridDescriptionSection gridDescription = new Grib1GridDescriptionSection();
+    Grib1BinaryDataSection binaryData = new Grib1BinaryDataSection();
 
     public Grib1Record() {
         super(GRIB_VERSION_1);
