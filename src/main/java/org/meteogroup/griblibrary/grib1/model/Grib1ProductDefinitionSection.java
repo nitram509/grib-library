@@ -14,36 +14,6 @@ import lombok.ToString;
 @ToString
 public class Grib1ProductDefinitionSection {
 
-    private int pdsLenght;
-
-    private int parameterTableVersionNumber;
-    private int identificationOfCentre;
-    private int generatingProcessIdNumber;
-    private int gridIdentification;
-    private int identicatorOfParameterAndUnit;
-    private int identicatorOfTypeOfLevelOrLayer;
-    private int levelOrLayerValue1 = -1;
-    private int levelOrLayerValue2 = -1;
-    private int issueTimeCentury;
-    private int issueTimeYearOfCentury;
-    private int issueTimeMonth;
-    private int issueTimeDay;
-    private int issueTimeHour;
-    private int issueTimeMinute;
-    private int forecastTimeUnit;
-    private int forecastPeriodOfTime1;
-    private int forecastPeriodOfTime2;
-    private int timeRangeIndicator = -1;
-    private int numberIncludedInAverageOrAccumulation;
-    private int numberOfMissingFromAverageOrAcummulation;
-    private int identificationOfSubCentre;
-    private int decimalScaleFactor;
-
-    private boolean hasOnlyOneLevelOrLayerValue;
-
-    private boolean hasGDS;
-    private boolean hasBMS;
-
     public static final int FORECASTPERIODTYPE_MINUTE = 0;
     public static final int FORECASTPERIODTYPE_HOUR = 1;
     public static final int FORECASTPERIODTYPE_DAY = 2;
@@ -54,4 +24,35 @@ public class Grib1ProductDefinitionSection {
     public static final int LEVELTYPE_MEAN_SEA_LEVEL = 102;
     public static final int LEVELTYPE_FIXED_HEIGHT_LEVEL = 103;
     public static final int LEVELTYPE_FIXED_HEIGHT_ABOVE_GROUND = 105;
+
+    private int sectionLenght;
+
+    private byte parameterTableVersionNumber;
+    private byte identificationOfCentre;
+    private byte generatingProcessIdNumber;
+    private byte gridIdentification;
+    private byte identicatorOfParameterAndUnit;
+    private byte identicatorOfTypeOfLevelOrLayer;
+    private short levelOrLayerValue1 = -1;
+    private short levelOrLayerValue2 = -1;
+    private byte issueTimeCentury;
+    private byte issueTimeYearOfCentury;
+    private byte issueTimeMonth;
+    private byte issueTimeDay;
+    private byte issueTimeHour;
+    private byte issueTimeMinute;
+    private byte forecastTimeUnit;
+    private byte forecastPeriodOfTime1;
+    private byte forecastPeriodOfTime2;
+    private byte timeRangeIndicator = -1;
+    private short numberIncludedInAverageOrAccumulation;
+    private byte numberOfMissingFromAverageOrAcummulation;
+    private byte identificationOfSubCentre;
+    private short decimalScaleFactor;
+
+    private boolean hasOnlyOneLevelOrLayerValue;
+
+    private boolean hasGDS;
+    private boolean hasBMS;
+
 }

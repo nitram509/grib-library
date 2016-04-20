@@ -129,23 +129,29 @@ public class BytesToPrimitiveHelper {
     }
 
     private static int getIntForFour(byte[] inputValues) {
-        int valueAt0 = getBit(inputValues[0],8);
+        int valueAt0 = getBit(inputValues[0], 8);
         byte newByte = (byte) (inputValues[0] & ~(1 << 7));
-        if (valueAt0 == 1){
+        if (valueAt0 == 1) {
             byte[] values = new byte[4];
             values[0] = newByte;
             values[1] = inputValues[1];
             values[2] = inputValues[2];
             values[3] = inputValues[3];
             return -1 * bytes4ToInt(values);
-        }
-        else{
+        } else {
             return bytes4ToInt(inputValues);
         }
     }
 
-    public static int getBit(int value, int position)
-    {
+    public static int getBit(int value, int position) {
         return (value >> position) & 1;
+    }
+
+    public static final short asShort(byte highValue, byte lowValue) {
+        return (short) ((highValue << 8) | lowValue);
+    }
+
+    public static final short asShort(byte lowValue) {
+        return (short) ((lowValue) & BYTE_MASK);
     }
 }

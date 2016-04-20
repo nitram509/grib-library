@@ -5,13 +5,16 @@ import org.meteogroup.griblibrary.grib1.model.Grib1ProductDefinitionSection;
 import org.meteogroup.griblibrary.util.BitChecker;
 import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.meteogroup.griblibrary.util.BytesToPrimitiveHelper.asShort;
+import static org.meteogroup.griblibrary.util.BytesToPrimitiveHelper.bytesToInteger;
 
 /**
  * Created by roijen on 21-Oct-15.
  */
 class Grib1PDSReader {
-
 
 
     private static final int POSITION_PDS_LENGTH_1 = 0;
@@ -27,7 +30,19 @@ class Grib1PDSReader {
     private static final int POSITION_PDS_IDENTICATOR_OF_PARAMETER_AND_UNIT = 8;
     private static final int POSITION_PDS_IDENTICATOR_OF_TYPE_OF_LEVEL_OR_LAYER = 9;
 
-    private static final ArrayList<Integer> HEIGHT_LAYERS_WITH_DOUBLE_OCTET_VALUES = new ArrayList<Integer>(){{add(100);add(103);add(105);add(107);add(109);add(111);add(113);add(125);add(160);add(200);add(201);}};
+    private static final Set<Byte> HEIGHT_LAYERS_WITH_DOUBLE_OCTET_VALUES = new HashSet<Byte>(11) {{
+        add((byte) 100);
+        add((byte) 103);
+        add((byte) 105);
+        add((byte) 107);
+        add((byte) 109);
+        add((byte) 111);
+        add((byte) 113);
+        add((byte) 125);
+        add((byte) 160);
+        add((byte) 200);
+        add((byte) 201);
+    }};
 
     private static final int POSITION_PDS_LEVEL_OR_LAYER_VALUE_1 = 10;
     private static final int POSITION_PDS_LEVEL_OR_LAYER_VALUE_2 = 11;
@@ -50,50 +65,50 @@ class Grib1PDSReader {
 
 
     public int readPDSLength(byte[] values, int headerOffSet) throws BinaryNumberConversionException {
-        return BytesToPrimitiveHelper.bytesToInteger(values[POSITION_PDS_LENGTH_1 + headerOffSet], values[POSITION_PDS_LENGTH_2 + headerOffSet], values[POSITION_PDS_LENGTH_3 + headerOffSet]);
+        return bytesToInteger(values[POSITION_PDS_LENGTH_1 + headerOffSet], values[POSITION_PDS_LENGTH_2 + headerOffSet], values[POSITION_PDS_LENGTH_3 + headerOffSet]);
     }
 
     public Grib1ProductDefinitionSection readPDSValues(byte[] values, int headerOffSet) throws BinaryNumberConversionException {
 
         Grib1ProductDefinitionSection objectToReadInto = new Grib1ProductDefinitionSection();
-        objectToReadInto.setPdsLenght(this.readPDSLength(values,headerOffSet));
-        objectToReadInto.setParameterTableVersionNumber((short) (values[POSITION_PDS_TABLE_VERSION_NUMBER + headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setIdentificationOfCentre((short)(values[POSITION_PDS_IDENTIFICATION_OF_CENTRE+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setGeneratingProcessIdNumber((short)(values[POSITION_PDS_GENERATING_PROCESS_NUMBER+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setGridIdentification((short)(values[POSITION_PDS_GRIB_IDENTIFICATION+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
+        objectToReadInto.setSectionLenght(readPDSLength(values, headerOffSet));
+        objectToReadInto.setParameterTableVersionNumber(values[POSITION_PDS_TABLE_VERSION_NUMBER + headerOffSet]);
+        objectToReadInto.setIdentificationOfCentre(values[POSITION_PDS_IDENTIFICATION_OF_CENTRE + headerOffSet]);
+        objectToReadInto.setGeneratingProcessIdNumber(values[POSITION_PDS_GENERATING_PROCESS_NUMBER + headerOffSet]);
+        objectToReadInto.setGridIdentification(values[POSITION_PDS_GRIB_IDENTIFICATION + headerOffSet]);
 
-        objectToReadInto.setHasGDS(BitChecker.testBit(values[POSITION_PDS_BMS_GDS_FLAGS+headerOffSet], FLAG_GDS));
-        objectToReadInto.setHasBMS(BitChecker.testBit(values[POSITION_PDS_BMS_GDS_FLAGS+headerOffSet], FLAG_BMS));
+        objectToReadInto.setHasGDS(BitChecker.testBit(values[POSITION_PDS_BMS_GDS_FLAGS + headerOffSet], FLAG_GDS));
+        objectToReadInto.setHasBMS(BitChecker.testBit(values[POSITION_PDS_BMS_GDS_FLAGS + headerOffSet], FLAG_BMS));
 
-        objectToReadInto.setIdenticatorOfParameterAndUnit((short)(values[POSITION_PDS_IDENTICATOR_OF_PARAMETER_AND_UNIT+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setIdenticatorOfTypeOfLevelOrLayer((short)(values[POSITION_PDS_IDENTICATOR_OF_TYPE_OF_LEVEL_OR_LAYER+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
+        objectToReadInto.setIdenticatorOfParameterAndUnit(values[POSITION_PDS_IDENTICATOR_OF_PARAMETER_AND_UNIT + headerOffSet]);
+        objectToReadInto.setIdenticatorOfTypeOfLevelOrLayer(values[POSITION_PDS_IDENTICATOR_OF_TYPE_OF_LEVEL_OR_LAYER + headerOffSet]);
 
-        if(HEIGHT_LAYERS_WITH_DOUBLE_OCTET_VALUES.contains(objectToReadInto.getIdenticatorOfTypeOfLevelOrLayer())){
+        if (HEIGHT_LAYERS_WITH_DOUBLE_OCTET_VALUES.contains(objectToReadInto.getIdenticatorOfTypeOfLevelOrLayer())) {
             objectToReadInto.setHasOnlyOneLevelOrLayerValue(true);
-            objectToReadInto.setLevelOrLayerValue1(BytesToPrimitiveHelper.bytesToInteger(values[POSITION_PDS_LEVEL_OR_LAYER_VALUE_1+headerOffSet], values[POSITION_PDS_LEVEL_OR_LAYER_VALUE_2+headerOffSet]));
-        } else{
+            objectToReadInto.setLevelOrLayerValue1(asShort(values[POSITION_PDS_LEVEL_OR_LAYER_VALUE_1 + headerOffSet], values[POSITION_PDS_LEVEL_OR_LAYER_VALUE_2 + headerOffSet]));
+        } else {
             objectToReadInto.setHasOnlyOneLevelOrLayerValue(false);
-            objectToReadInto.setLevelOrLayerValue1((short)(values[POSITION_PDS_LEVEL_OR_LAYER_VALUE_1+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-            objectToReadInto.setLevelOrLayerValue2((short) (values[POSITION_PDS_LEVEL_OR_LAYER_VALUE_2 + headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
+            objectToReadInto.setLevelOrLayerValue1(asShort(values[POSITION_PDS_LEVEL_OR_LAYER_VALUE_1 + headerOffSet]));
+            objectToReadInto.setLevelOrLayerValue2(asShort(values[POSITION_PDS_LEVEL_OR_LAYER_VALUE_2 + headerOffSet]));
         }
 
-        objectToReadInto.setIssueTimeYearOfCentury((short)(values[POSITION_PDS_ISSUE_TIME_YEAR_OF_CENTURY+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setIssueTimeMonth((short)(values[POSITION_PDS_ISSUE_TIME_MONTH+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setIssueTimeDay((short)(values[POSITION_PDS_ISSUE_TIME_DAY+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setIssueTimeHour((short)(values[POSITION_PDS_ISSUE_TIME_HOUR+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setIssueTimeMinute((short)(values[POSITION_PDS_ISSUE_TIME_MINUTE+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setForecastTimeUnit((short)(values[POSITION_PDS_FORECAST_TIME_UNITE+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setForecastPeriodOfTime1((short)(values[POSITION_PDS_FORECAST_PERIOD_OF_TIME_1+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setForecastPeriodOfTime2((short)(values[POSITION_PDS_FORECAST_PERIOD_OF_TIME_2+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setTimeRangeIndicator((short)(values[POSITION_PDS_TIME_RANGE_INDICATOR+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
+        objectToReadInto.setIssueTimeYearOfCentury(values[POSITION_PDS_ISSUE_TIME_YEAR_OF_CENTURY + headerOffSet]);
+        objectToReadInto.setIssueTimeMonth(values[POSITION_PDS_ISSUE_TIME_MONTH + headerOffSet]);
+        objectToReadInto.setIssueTimeDay(values[POSITION_PDS_ISSUE_TIME_DAY + headerOffSet]);
+        objectToReadInto.setIssueTimeHour(values[POSITION_PDS_ISSUE_TIME_HOUR + headerOffSet]);
+        objectToReadInto.setIssueTimeMinute(values[POSITION_PDS_ISSUE_TIME_MINUTE + headerOffSet]);
+        objectToReadInto.setForecastTimeUnit(values[POSITION_PDS_FORECAST_TIME_UNITE + headerOffSet]);
+        objectToReadInto.setForecastPeriodOfTime1(values[POSITION_PDS_FORECAST_PERIOD_OF_TIME_1 + headerOffSet]);
+        objectToReadInto.setForecastPeriodOfTime2(values[POSITION_PDS_FORECAST_PERIOD_OF_TIME_2 + headerOffSet]);
+        objectToReadInto.setTimeRangeIndicator(values[POSITION_PDS_TIME_RANGE_INDICATOR + headerOffSet]);
 
-        objectToReadInto.setNumberIncludedInAverageOrAccumulation(BytesToPrimitiveHelper.bytesToInteger(values[POSITION_PDS_NUMBER_INCLUDED_IN_AVERAGE_OR_ACCUMULATION_1+headerOffSet], values[POSITION_PDS_NUMBER_INCLUDED_IN_AVERAGE_OR_ACCUMULATION_2+headerOffSet]));
+        objectToReadInto.setNumberIncludedInAverageOrAccumulation(asShort(values[POSITION_PDS_NUMBER_INCLUDED_IN_AVERAGE_OR_ACCUMULATION_1 + headerOffSet], values[POSITION_PDS_NUMBER_INCLUDED_IN_AVERAGE_OR_ACCUMULATION_2 + headerOffSet]));
 
-        objectToReadInto.setNumberOfMissingFromAverageOrAcummulation((short) (values[POSITION_PDS_NUMBER_OF_MISSING_FROM_AVERAGE_OR_ACCUMULATION + headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setIssueTimeCentury((short)(values[POSITION_PDS_ISSUE_TIME_CENTURY+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToReadInto.setIdentificationOfSubCentre((short)(values[POSITION_PDS_IDENTIFICATION_OF_SUBCENTRE+headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK));
+        objectToReadInto.setNumberOfMissingFromAverageOrAcummulation(values[POSITION_PDS_NUMBER_OF_MISSING_FROM_AVERAGE_OR_ACCUMULATION + headerOffSet]);
+        objectToReadInto.setIssueTimeCentury(values[POSITION_PDS_ISSUE_TIME_CENTURY + headerOffSet]);
+        objectToReadInto.setIdentificationOfSubCentre(values[POSITION_PDS_IDENTIFICATION_OF_SUBCENTRE + headerOffSet]);
 
-        objectToReadInto.setDecimalScaleFactor(BytesToPrimitiveHelper.bytesToInteger(values[POSITION_PDS_DECIMAL_SCALE_FACTOR_1+headerOffSet], values[POSITION_PDS_DECIMAL_SCALE_FACTOR_2+headerOffSet]));
+        objectToReadInto.setDecimalScaleFactor(asShort(values[POSITION_PDS_DECIMAL_SCALE_FACTOR_1 + headerOffSet], values[POSITION_PDS_DECIMAL_SCALE_FACTOR_2 + headerOffSet]));
 
         return objectToReadInto;
     }
