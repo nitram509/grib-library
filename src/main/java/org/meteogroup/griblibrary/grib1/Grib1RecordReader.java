@@ -74,7 +74,7 @@ public class Grib1RecordReader {
     public Grib1Record readCompleteRecord(Grib1Record grib1Record, byte[] bufferValues, int headerOffSet) throws BinaryNumberConversionException, GribReaderException {
         Grib1ProductDefinitionSection pds = pdsReader.readPDSValues(bufferValues, headerOffSet);
         grib1Record.setProductDefinition(pds);
-        headerOffSet += pds.getPdsLenght();
+        headerOffSet += pds.getSectionLenght();
         Grib1GridDescriptionSection gds = gdsReader.readGDSValues(bufferValues, headerOffSet);
         grib1Record.setGridDescription(gds);
         headerOffSet += gds.getGdsLenght();

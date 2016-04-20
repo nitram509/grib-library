@@ -54,30 +54,30 @@ public class Grib1ProductDefinitionSectionReaderTest {
 
     private static final Grib1ProductDefinitionSection GOOD_PDS_OBJECT(){
         Grib1ProductDefinitionSection pds = new Grib1ProductDefinitionSection();
-        pds.setPdsLenght(28);
-        pds.setParameterTableVersionNumber(128);
-        pds.setIdentificationOfCentre(98);
-        pds.setGeneratingProcessIdNumber(145);
-        pds.setGridIdentification(255);
-        pds.setIdenticatorOfParameterAndUnit(41);
-        pds.setIdenticatorOfTypeOfLevelOrLayer(112);
-        pds.setLevelOrLayerValue1(28);
-        pds.setLevelOrLayerValue2(100);
-        pds.setIssueTimeYearOfCentury(15);
-        pds.setIssueTimeMonth(8);
-        pds.setIssueTimeDay(7);
-        pds.setIssueTimeHour(0);
-        pds.setIssueTimeMinute(0);
-        pds.setIssueTimeCentury(21);
-        pds.setForecastTimeUnit(1);
-        pds.setForecastPeriodOfTime1(6);
-        pds.setForecastPeriodOfTime2(0);
-        pds.setTimeRangeIndicator(0);
+        pds.setSectionLenght(28);
+        pds.setParameterTableVersionNumber((byte)128);
+        pds.setIdentificationOfCentre((byte)98);
+        pds.setGeneratingProcessIdNumber((byte)145);
+        pds.setGridIdentification((byte)255);
+        pds.setIdenticatorOfParameterAndUnit((byte)41);
+        pds.setIdenticatorOfTypeOfLevelOrLayer((byte)112);
+        pds.setLevelOrLayerValue1((byte)28);
+        pds.setLevelOrLayerValue2((byte)100);
+        pds.setIssueTimeYearOfCentury((byte)15);
+        pds.setIssueTimeMonth((byte)8);
+        pds.setIssueTimeDay((byte)7);
+        pds.setIssueTimeHour((byte)0);
+        pds.setIssueTimeMinute((byte)0);
+        pds.setIssueTimeCentury((byte)21);
+        pds.setForecastTimeUnit((byte)1);
+        pds.setForecastPeriodOfTime1((byte)6);
+        pds.setForecastPeriodOfTime2((byte)0);
+        pds.setTimeRangeIndicator((byte)0);
         pds.setHasGDS(true);
         pds.setHasBMS(false);
-        pds.setNumberIncludedInAverageOrAccumulation(0);
-        pds.setIdentificationOfSubCentre(0);
-        pds.setDecimalScaleFactor(0);
+        pds.setNumberIncludedInAverageOrAccumulation((byte)0);
+        pds.setIdentificationOfSubCentre((byte)0);
+        pds.setDecimalScaleFactor((byte)0);
         return pds;
     }
 

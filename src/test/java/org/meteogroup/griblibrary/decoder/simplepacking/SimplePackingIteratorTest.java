@@ -49,7 +49,7 @@ public class SimplePackingIteratorTest {
     }
 
     private static final double EXPECTED_VALUE_4800 = 4800;
-    private static final int FACTOR_DIVISION_1 = 1;
+    private static final short FACTOR_DIVISION_1 = 1;
     private static final int BINARY_SCALE_MINUS_6 = -6;
     private static final int INPUT_VALUE_5927 = 5927;
     private static final float REFERENCE_VALUE_4707 = 4707.379f;

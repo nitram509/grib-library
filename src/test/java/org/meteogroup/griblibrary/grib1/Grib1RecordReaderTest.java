@@ -135,7 +135,7 @@ public class Grib1RecordReaderTest {
 
     private static final Grib1ProductDefinitionSection LENGTH_ONLY_PDS(){
         Grib1ProductDefinitionSection pds = new Grib1ProductDefinitionSection();
-        pds.setPdsLenght(8);
+        pds.setSectionLenght(8);
         return pds;
     }
 
