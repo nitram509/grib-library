@@ -10,6 +10,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * a.k.a. 'grib_ls'
+ */
 public class PrintGribFileContentExample {
 
 
