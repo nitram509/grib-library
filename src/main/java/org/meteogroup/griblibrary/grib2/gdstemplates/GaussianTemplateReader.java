@@ -1,9 +1,10 @@
 package org.meteogroup.griblibrary.grib2.gdstemplates;
 
 import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
-import org.meteogroup.griblibrary.grib2.model.gdstemplates.GDSTemplate;
 import org.meteogroup.griblibrary.grib2.model.gdstemplates.GaussianGDSTemplate;
 import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
+
+import static org.meteogroup.griblibrary.util.BytesToPrimitiveHelper.asSignedInt;
 
 public class GaussianTemplateReader implements GridTemplateReader{
 	
@@ -85,58 +86,58 @@ public class GaussianTemplateReader implements GridTemplateReader{
 
 	
 	protected int readShapeOfEarth(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-    	return gdsValues[POSITION_SHAPE_OF_EARTH + headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK;
+    	return gdsValues[POSITION_SHAPE_OF_EARTH + headerOffSet] & BytesToPrimitiveHelper.INT_BYTE_MASK;
     }
 	
 	protected int readScaleFactorRadiusEarth(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-    	return gdsValues[POSITION_SCALE_FACTOR_RADIUS_SPHERICALEARTH + headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK;
+    	return gdsValues[POSITION_SCALE_FACTOR_RADIUS_SPHERICALEARTH + headerOffSet] & BytesToPrimitiveHelper.INT_BYTE_MASK;
     }
 	
 	protected int readScaleValueRadiusEarth(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-    	return BytesToPrimitiveHelper.bytesToInteger(gdsValues[POSITION_SCALE_VALUE_RADIUS_SPHERICALEARTH_1 + headerOffSet],
+    	return BytesToPrimitiveHelper.asInt(gdsValues[POSITION_SCALE_VALUE_RADIUS_SPHERICALEARTH_1 + headerOffSet],
     			gdsValues[POSITION_SCALE_VALUE_RADIUS_SPHERICALEARTH_2 + headerOffSet],
     			gdsValues[POSITION_SCALE_VALUE_RADIUS_SPHERICALEARTH_3 + headerOffSet],
     			gdsValues[POSITION_SCALE_VALUE_RADIUS_SPHERICALEARTH_4 + headerOffSet]);
     }
 	
 	protected int readScaleFactorMajorAxisEarth(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-    	return gdsValues[POSITION_SCALE_FACTORMAJOR_AXIS_SPHERICALEARTH + headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK;
+    	return gdsValues[POSITION_SCALE_FACTORMAJOR_AXIS_SPHERICALEARTH + headerOffSet] & BytesToPrimitiveHelper.INT_BYTE_MASK;
     }
 	
 	protected int readScaleValueMajorAxisEarth(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-    	return BytesToPrimitiveHelper.bytesToInteger(gdsValues[POSITION_SCALE_VALUE_MAJOR_AXIS_SPHERICALEARTH_1 + headerOffSet],
+    	return BytesToPrimitiveHelper.asInt(gdsValues[POSITION_SCALE_VALUE_MAJOR_AXIS_SPHERICALEARTH_1 + headerOffSet],
     			gdsValues[POSITION_SCALE_VALUE_MAJOR_AXIS_SPHERICALEARTH_2 + headerOffSet],
     			gdsValues[POSITION_SCALE_VALUE_MAJOR_AXIS_SPHERICALEARTH_3 + headerOffSet],
     			gdsValues[POSITION_SCALE_VALUE_MAJOR_AXIS_SPHERICALEARTH_4 + headerOffSet]);
     }
 	
 	protected int readScaleFactorMinorAxisEarth(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-    	return gdsValues[POSITION_SCALE_FACTORMINOR_AXIS_SPHERICALEARTH + headerOffSet] & BytesToPrimitiveHelper.BYTE_MASK;
+    	return gdsValues[POSITION_SCALE_FACTORMINOR_AXIS_SPHERICALEARTH + headerOffSet] & BytesToPrimitiveHelper.INT_BYTE_MASK;
     }
 	
 	protected int readScaleValueMinorAxisEarth(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-    	return BytesToPrimitiveHelper.bytesToInteger(gdsValues[POSITION_SCALE_VALUE_MINOR_AXIS_SPHERICALEARTH_1 + headerOffSet],
+    	return BytesToPrimitiveHelper.asInt(gdsValues[POSITION_SCALE_VALUE_MINOR_AXIS_SPHERICALEARTH_1 + headerOffSet],
     			gdsValues[POSITION_SCALE_VALUE_MINOR_AXIS_SPHERICALEARTH_2 + headerOffSet],
     			gdsValues[POSITION_SCALE_VALUE_MINOR_AXIS_SPHERICALEARTH_3 + headerOffSet],
     			gdsValues[POSITION_SCALE_VALUE_MINOR_AXIS_SPHERICALEARTH_4 + headerOffSet]);
     }
 	
 	protected int readNi(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-    	return BytesToPrimitiveHelper.bytesToInteger(gdsValues[POSITION_NI_1 + headerOffSet],
+    	return BytesToPrimitiveHelper.asInt(gdsValues[POSITION_NI_1 + headerOffSet],
     			gdsValues[POSITION_NI_2 + headerOffSet],
     			gdsValues[POSITION_NI_3 + headerOffSet],
     			gdsValues[POSITION_NI_4 + headerOffSet]);
     }
 	
 	protected int readNj(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-    	return BytesToPrimitiveHelper.bytesToInteger(gdsValues[POSITION_NJ_1 + headerOffSet],
+    	return BytesToPrimitiveHelper.asInt(gdsValues[POSITION_NJ_1 + headerOffSet],
     			gdsValues[POSITION_NJ_2 + headerOffSet],
     			gdsValues[POSITION_NJ_3 + headerOffSet],
     			gdsValues[POSITION_NJ_4 + headerOffSet]);
     }
 	
 	protected float readLa1(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-    	return BytesToPrimitiveHelper.bytesToInteger(
+    	return BytesToPrimitiveHelper.asInt(
     			gdsValues[POSITION_LA1_1 + headerOffSet],
     			gdsValues[POSITION_LA1_2 + headerOffSet],
     			gdsValues[POSITION_LA1_3 + headerOffSet],
@@ -144,7 +145,7 @@ public class GaussianTemplateReader implements GridTemplateReader{
     }
 	
 	protected float readLo1(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-    	return BytesToPrimitiveHelper.bytesToInteger(
+    	return BytesToPrimitiveHelper.asInt(
     			gdsValues[POSITION_LO1_1 + headerOffSet],
     			gdsValues[POSITION_LO1_2 + headerOffSet],
     			gdsValues[POSITION_LO1_3 + headerOffSet],
@@ -152,15 +153,11 @@ public class GaussianTemplateReader implements GridTemplateReader{
     }
 	
 	protected float readLa2(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-    	return BytesToPrimitiveHelper.signedBytesToInt(
-    			gdsValues[POSITION_LA2_1 + headerOffSet],
-    			gdsValues[POSITION_LA2_2 + headerOffSet],
-    			gdsValues[POSITION_LA2_3 + headerOffSet],
-    			gdsValues[POSITION_LA2_4 + headerOffSet]) / 1000000f;
+		return asSignedInt(gdsValues[POSITION_LA2_1 + headerOffSet], gdsValues[POSITION_LA2_2 + headerOffSet], gdsValues[POSITION_LA2_3 + headerOffSet], gdsValues[POSITION_LA2_4 + headerOffSet]) / 1000000f;
     }
 	
 	protected float readLo2(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-    	return BytesToPrimitiveHelper.bytesToInteger(
+    	return BytesToPrimitiveHelper.asInt(
     			gdsValues[POSITION_LO2_1 + headerOffSet],
     			gdsValues[POSITION_LO2_2 + headerOffSet],
     			gdsValues[POSITION_LO2_3 + headerOffSet],
@@ -169,7 +166,7 @@ public class GaussianTemplateReader implements GridTemplateReader{
 
 	protected float readDirectionIncrement(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
 		// Di
-		return BytesToPrimitiveHelper.bytesToInteger(
+		return BytesToPrimitiveHelper.asInt(
 				gdsValues[POSITION_DIRECTION_INCREMENT_1 + headerOffSet],
 				gdsValues[POSITION_DIRECTION_INCREMENT_2 + headerOffSet],
 				gdsValues[POSITION_DIRECTION_INCREMENT_3 + headerOffSet],
@@ -177,7 +174,7 @@ public class GaussianTemplateReader implements GridTemplateReader{
 	}
 
 	protected int readNumberOfParallelsPoleEquator(byte[] gdsValues, int headerOffSet) throws BinaryNumberConversionException {
-		return BytesToPrimitiveHelper.bytesToInteger(
+		return BytesToPrimitiveHelper.asInt(
 				gdsValues[POSITION_NUMBER_OF_PARALLELS_1 + headerOffSet],
 				gdsValues[POSITION_NUMBER_OF_PARALLELS_2 + headerOffSet],
 				gdsValues[POSITION_NUMBER_OF_PARALLELS_3 + headerOffSet],
@@ -187,7 +184,7 @@ public class GaussianTemplateReader implements GridTemplateReader{
 	protected int[] readNumberOfPointsPerParallel(byte[] gdsValues, int headerOffSet, int numberOfParallels) throws BinaryNumberConversionException {
 		int[] pointsPerParallel = new int[numberOfParallels];
 		for (int i = 0; i < numberOfParallels; i++){
-			pointsPerParallel[i] = BytesToPrimitiveHelper.bytesToInteger(
+			pointsPerParallel[i] = BytesToPrimitiveHelper.asInt(
 					gdsValues[POSITION_START_POINTS_PER_PARALLEL + (2 * i) + headerOffSet],
 					gdsValues[POSITION_START_POINTS_PER_PARALLEL + (2 * i) + 1 + headerOffSet]);
 		}

@@ -4,10 +4,11 @@ import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
 import org.meteogroup.griblibrary.exception.GribReaderException;
 import org.meteogroup.griblibrary.grib.GribReaderFactory;
 import org.meteogroup.griblibrary.grib2.model.*;
-import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+
+import static org.meteogroup.griblibrary.util.BytesToPrimitiveHelper.asLong;
 
 /**
  * Created by roijen on 28-Oct-15.
@@ -46,12 +47,7 @@ public class Grib2RecordReader {
     }
 
     public long readRecordLength(byte[] recordHeader) throws GribReaderException {
-        long length = 0;
-        try {
-            length = BytesToPrimitiveHelper.bytesToLong(recordHeader[POSITION_LENGTH_1], recordHeader[POSITION_LENGTH_2], recordHeader[POSITION_LENGTH_3], recordHeader[POSITION_LENGTH_4], recordHeader[POSITION_LENGTH_5], recordHeader[POSITION_LENGTH_6], recordHeader[POSITION_LENGTH_7], recordHeader[POSITION_LENGTH_8]);
-        } catch (BinaryNumberConversionException e) {
-            throw new GribReaderException(e.getMessage(), e);
-        }
+        long length = asLong(recordHeader[POSITION_LENGTH_1], recordHeader[POSITION_LENGTH_2], recordHeader[POSITION_LENGTH_3], recordHeader[POSITION_LENGTH_4], recordHeader[POSITION_LENGTH_5], recordHeader[POSITION_LENGTH_6], recordHeader[POSITION_LENGTH_7], recordHeader[POSITION_LENGTH_8]);
         if (length < MINIMUM_REQUIRED_LENGTH_IN_BIT) {
             throw new GribReaderException("The suggested length in the record header is invalid.");
         }

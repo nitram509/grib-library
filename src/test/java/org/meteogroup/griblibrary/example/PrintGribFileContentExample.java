@@ -2,9 +2,12 @@ package org.meteogroup.griblibrary.example;
 
 import org.meteogroup.griblibrary.grib.GribReaderFactory;
 import org.meteogroup.griblibrary.grib1.Grib1CollectionReader;
+import org.meteogroup.griblibrary.grib1.model.Grib1BinaryDataSection;
+import org.meteogroup.griblibrary.grib1.model.Grib1GridDescriptionSection;
 import org.meteogroup.griblibrary.grib1.model.Grib1ProductDefinitionSection;
 import org.meteogroup.griblibrary.grib1.model.Grib1Record;
 import org.meteogroup.griblibrary.grib1.spec.CenterNameResolver;
+import org.meteogroup.griblibrary.grib1.spec.DataRepresentationTypeResolver;
 
 import java.io.File;
 import java.util.List;
@@ -34,7 +37,9 @@ public class PrintGribFileContentExample {
             Grib1CollectionReader grib1CollectionReader = version1.get();
             List<Grib1Record> gribRecords = grib1CollectionReader.readAllRecords(getGribFilename());
             for (Grib1Record gribRecord : gribRecords) {
+                printGridDescription(gribRecord.getGridDescription());
                 printProductDefinition(gribRecord.getProductDefinition());
+                printGrid(gribRecord.getBinaryData());
             }
         } else {
             throw new IllegalStateException("Sorry, this example just can process GRIB1 file types. But the given file wasn't v1.");
@@ -43,12 +48,20 @@ public class PrintGribFileContentExample {
         System.out.println("time (ms): " + (end-start));
     }
 
+    private void printGridDescription(Grib1GridDescriptionSection gridDescription) {
+        System.out.println("DataRepresentationType: " + new DataRepresentationTypeResolver().resolveShortName(gridDescription.getDataRepresentationType()));
+    }
+
+    private void printGrid(Grib1BinaryDataSection binaryData) {
+
+    }
+
     private void printProductDefinition(Grib1ProductDefinitionSection productDefinition) {
         System.out.println("edition      centre       typeOfLevel  level        dataDate     stepRange    dataType     shortName    packingType  gridType");
         String msg = "";
         msg += 1;
         msg += "     ";
-        msg += centerNameResolver.resolveShortName(productDefinition.getIdentificationOfCentre());
+        msg += centerNameResolver.resolveShortName(productDefinition.getIdentificationOfCenter());
         System.out.println(msg);
     }
 

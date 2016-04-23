@@ -1,7 +1,5 @@
 package org.meteogroup.griblibrary.util;
 
-import java.io.IOException;
-
 /**
  * Created by roijen on 03-Nov-15.
  */
@@ -45,7 +43,7 @@ public class BitReader {
                 //Reading only part of this byte;
                 result |= bitBufferAsInteger >> -shift;
                 bitPositionInByte -= bitsLeftToRead;
-                bitBufferAsInteger &= BytesToPrimitiveHelper.BYTE_MASK >> (BIT_LENGTH - bitPositionInByte);
+                bitBufferAsInteger &= BytesToPrimitiveHelper.INT_BYTE_MASK >> (BIT_LENGTH - bitPositionInByte);
                 return result;
             }
         }
@@ -84,7 +82,7 @@ public class BitReader {
     int nextByte() {
         int result = -1;
         if (data != null) {
-            result = (data[bytePositionInByteArray] & BytesToPrimitiveHelper.BYTE_MASK);
+            result = (data[bytePositionInByteArray] & BytesToPrimitiveHelper.INT_BYTE_MASK);
         }
         bytePositionInByteArray++;
         return result;

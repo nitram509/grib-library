@@ -1,157 +1,98 @@
 package org.meteogroup.griblibrary.util;
 
-import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
-
 /**
  * Created by roijen on 21-Oct-15.
  */
 public class BytesToPrimitiveHelper {
 
-    public static final int BYTE_MASK = 0xff;
+    public static final int INT_BYTE_MASK = 0xff;
+    public static final long LONG_BYTE_MASK = 0xffL;
 
-    private BytesToPrimitiveHelper() {
-    }
-
-    public static int bytesToInteger(byte... inputValue) throws BinaryNumberConversionException {
-        if (inputValue.length == 2) {
-            return bytes2ToInt(inputValue);
-        } else if (inputValue.length == 3) {
-            return bytes3ToInt(inputValue);
-        } else if (inputValue.length == 4) {
-            return bytes4ToInt(inputValue);
-        }
-        throw new BinaryNumberConversionException("Invalid length of input value in an attempt to convert byte array to int");
-    }
-
-    private static int bytes3ToInt(byte... values) {
-        return (((values[0] & BYTE_MASK) << 8) | (values[1] & BYTE_MASK)) << 8 | (values[2] & BYTE_MASK);
-    }
-
-    private static int bytes4ToInt(byte[] values) {
-        int value = 0;
-        for (int i = 0; i < values.length; i++) {
-            value = (value << 8) + (values[i] & 0xff);
-        }
-        return value;
-    }
-
-    /**
-     * @deprecated SIGNING ISSUE, DO NOT USE!
-     */
-    @Deprecated
-    public static short bytesToShort(byte... inputValues) throws BinaryNumberConversionException {
-        if (inputValues.length == 2) {
-            return (short) bytes2ToInt(inputValues);
-        } else {
-            throw new BinaryNumberConversionException("Invalid length of input value in an attempt to convert byte array to short");
-        }
-    }
-
-    private static int bytes2ToInt(byte[] inputValues) {
-        return ((inputValues[0] & BYTE_MASK) << 8) | (inputValues[1] & BYTE_MASK);
-    }
-
-    public static int signedBytesToInt(byte... values) throws BinaryNumberConversionException {
-        if (values.length == 2) {
-            return BytesToPrimitiveHelper.signedBytes2ToInt(values);
-        } else if (values.length == 3) {
-            return BytesToPrimitiveHelper.signedBytes3ToInt(values);
-        } else if (values.length == 4) {
-            return BytesToPrimitiveHelper.getIntForFour(values);
-        }
-        throw new BinaryNumberConversionException("Failed to convert to integer.");
-    }
-
-    private static int signedBytes2ToInt(byte[] values) {
-        return (1 - (((values[0] & BYTE_MASK) & 128) >> 6)) * (((values[0] & BYTE_MASK) & 127) << 8 | (values[1] & BYTE_MASK));
-        //return ((values[0] & 0xff) | (values[1] << 8)) << 16 >> 16;
-    }
-
-    private static int signedBytes3ToInt(byte... values) {
-        int value = bytes3ToInt(values);
-        if ((value & 0x800000) != 0) {
-            value = value & 0x7FFFFF;
-            value = -value;
-        }
-        return value;
-    }
-
-    private static int signedBytes4ToInt(byte... values) {
-        int value = bytes4ToInt(values);
-        if ((value & 0x800000) != 0) {
-            value = value & 0x7FFFFF;
-            value = -value;
-        }
-        return value;
-    }
-
-    public static float bytesToFloatAsIBM(byte... inputValue) throws BinaryNumberConversionException {
-        if (inputValue.length == 4) {
-            return byte4ToFloatAsIBM(inputValue);
-        }
-        throw new BinaryNumberConversionException("Invalid length of input value in an attempt to convert byte array to int");
-    }
-
-    public static float bytesToFloat(byte... inputValue) throws BinaryNumberConversionException {
-        if (inputValue.length == 4) {
-            int bits = bytes4ToInt(inputValue);
-            return Float.intBitsToFloat(bits);
-        }
-        throw new BinaryNumberConversionException("Invalid length of input value in an attempt to convert byte array to int");
-    }
-
-    private static float byte4ToFloatAsIBM(byte[] values) {
+    public static float bytesToFloatAsIBM(final byte highestValue, final byte highValue, final byte lowValue, final byte lowestValue) {
         //TODO Check signing...
         int sgn, mant, exp;
-        mant = (values[1] & 0xff) << 16 | (values[2] & 0xff) << 8 | (values[3]) & 0xff;
+        mant = (highValue & 0xff) << 16 | (lowValue & 0xff) << 8 | lowestValue & 0xff;
         if (mant == 0) {
             return 0.0f;
         }
-
-        sgn = -((((values[0] & 0xff) & 128) >> 6) - 1);
-        exp = ((values[0] & 0xff) & 127) - 64;
+        sgn = -((((highestValue & 0xff) & 128) >> 6) - 1);
+        exp = ((highestValue & 0xff) & 127) - 64;
         return (float) (sgn * Math.pow(16.0, exp - 6) * mant);
     }
 
-    public static long bytesToLong(byte... inputValues) throws BinaryNumberConversionException {
-        if (inputValues.length == 8) {
-            return BytesToPrimitiveHelper.bytes8ToLong(inputValues);
+    public static float bytesToFloat(byte... inputValue) {
+        if (inputValue.length == 4) {
+            int bits = asInt(inputValue[0], inputValue[1], inputValue[2], inputValue[3]);
+            return Float.intBitsToFloat(bits);
         }
-        throw new BinaryNumberConversionException("Invalid length of input value in an attempt to convert byte array to int");
+        throw new IllegalArgumentException("Invalid length of input value in an attempt to convert byte array to int");
     }
 
-    private static long bytes8ToLong(byte[] inputValues) {
-        long value = 0;
-        for (int i = 0; i < inputValues.length; i++) {
-            value = (value << 8) + (inputValues[i] & 0xff);
-        }
-        return value;
+    public static long asLong(final byte value7, final byte value6, final byte value5, final byte value4, final byte value3, final byte value2, final byte value1, final byte value0) {
+        return ((value7 & LONG_BYTE_MASK) << 56)
+                | ((value6 & LONG_BYTE_MASK) << 48)
+                | ((value5 & LONG_BYTE_MASK) << 40)
+                | ((value4 & LONG_BYTE_MASK) << 32)
+                | ((value3 & LONG_BYTE_MASK) << 24)
+                | ((value2 & LONG_BYTE_MASK) << 16)
+                | ((value1 & LONG_BYTE_MASK) << 8)
+                | (value0 & LONG_BYTE_MASK);
     }
 
-    private static int getIntForFour(byte[] inputValues) {
-        int valueAt0 = getBit(inputValues[0], 8);
-        byte newByte = (byte) (inputValues[0] & ~(1 << 7));
-        if (valueAt0 == 1) {
-            byte[] values = new byte[4];
-            values[0] = newByte;
-            values[1] = inputValues[1];
-            values[2] = inputValues[2];
-            values[3] = inputValues[3];
-            return -1 * bytes4ToInt(values);
-        } else {
-            return bytes4ToInt(inputValues);
-        }
+    public static final short asShort(final byte highValue, final byte lowValue) {
+        return (short) (((highValue & INT_BYTE_MASK) << 8)
+                | (lowValue & INT_BYTE_MASK));
     }
 
-    public static int getBit(int value, int position) {
-        return (value >> position) & 1;
+    public static final short asShort(final byte lowValue) {
+        return (short) ((lowValue) & INT_BYTE_MASK);
     }
 
-    public static final short asShort(byte highValue, byte lowValue) {
-        return (short) ((highValue << 8) | lowValue);
+    public static final int asInt(byte highestValue, byte highValue, byte lowValue, byte lowestValue) {
+        return ((highestValue & INT_BYTE_MASK) << 24)
+                | ((highValue & INT_BYTE_MASK) << 16)
+                | ((lowValue & INT_BYTE_MASK) << 8)
+                | (lowestValue & INT_BYTE_MASK);
     }
 
-    public static final short asShort(byte lowValue) {
-        return (short) ((lowValue) & BYTE_MASK);
+    public static final int asInt(final byte highestValue, final byte highValue, final byte lowValue) {
+        return ((highestValue & INT_BYTE_MASK) << 16)
+                | ((highValue & INT_BYTE_MASK) << 8)
+                | (lowValue & INT_BYTE_MASK);
+    }
+
+    public static final int asInt(final byte highValue, final byte lowValue) {
+        return ((highValue & INT_BYTE_MASK) << 8)
+                | (lowValue & INT_BYTE_MASK);
+    }
+
+    public static final int asInt(final byte lowValue) {
+        return lowValue & INT_BYTE_MASK;
+    }
+
+    public static final int asSignedInt(final byte highestValue, final byte highValue, final byte lowValue, final byte lowestValue) {
+        final int intVal = ((highestValue & 0b0111_1111) << 24)
+                | ((highValue & INT_BYTE_MASK) << 16)
+                | ((lowValue & INT_BYTE_MASK) << 8)
+                | (lowestValue & INT_BYTE_MASK);
+        return (highestValue & 0b1000_0000) == 0b1000_0000 ? -1 * intVal : intVal;
+    }
+
+    public static final int asSignedInt(final byte highestValue, final byte highValue, final byte lowValue) {
+        final int intVal = ((highestValue & 0b0111_1111) << 16)
+                | ((highValue & INT_BYTE_MASK) << 8)
+                | (lowValue & INT_BYTE_MASK);
+        return (highestValue & 0b1000_0000) == 0b1000_0000 ? -1 * intVal : intVal;
+    }
+
+    public static final int asSignedInt(final byte highValue, final byte lowValue) {
+        final int intVal = ((highValue & 0b0111_1111) << 8)
+                | (lowValue & INT_BYTE_MASK);
+        return (highValue & 0b1000_0000) == 0b1000_0000 ? -1 * intVal : intVal;
+    }
+
+    public static final int asSignedInt(final byte value) {
+        final int intVal = value & 0b0111_1111;
+        return (value & 0b1000_0000) == 0b1000_0000 ? -1 * intVal : intVal;
     }
 }

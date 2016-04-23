@@ -23,23 +23,30 @@ import static org.assertj.core.api.Assertions.within;
  */
 public class SimplePackingDecoderTest {
 
+    private static final byte BITS_PER_VALUE = 16;
+    private static final int NUMBER_OF_POINTS = 3;
+    private static final float FIRST_VALUE = 479.99f;
+    private static final float SECOND_VALUE = 470.77f;
+    private static final float THIRD_VALUE = 474.86f;
+    private static final byte[] SIMPLE_BYTE_ARRAY = new byte[]{23, 39, 0, 25, 10, 80};
+
     public SimplePackingDecoder decoder;
 
     @BeforeMethod
-    public void setup(){
+    public void setup() {
         decoder = new SimplePackingDecoder();
     }
 
     @DataProvider(name = "unpackingTestCases")
-    public Object[][] unpackingTestCases(){
+    public Object[][] unpackingTestCases() {
         return new Object[][]{
-                new Object[]{INPUT_VALUE_5927, FACTOR_DIVISION_1, BINARY_SCALE_MINUS_6, REFERENCE_VALUE_4707 ,EXPECTED_VALUE_4800}
+                new Object[]{INPUT_VALUE_5927, FACTOR_DIVISION_1, BINARY_SCALE_MINUS_6, REFERENCE_VALUE_4707, EXPECTED_VALUE_4800}
         };
     }
 
     @Test(dataProvider = "unpackingTestCases")
-    public void testGoodValues(int value, int factorDivision, int binaryScale, float referenceValue, double expectedResult){
-        double binaryScalePowered = Math.pow(2,binaryScale);
+    public void testGoodValues(int value, int factorDivision, int binaryScale, float referenceValue, double expectedResult) {
+        double binaryScalePowered = Math.pow(2, binaryScale);
         double actualValue = decoder.decodeValue(value, factorDivision, binaryScalePowered, referenceValue);
         assertThat(actualValue).isCloseTo(expectedResult, within(0.1));
     }
@@ -53,7 +60,7 @@ public class SimplePackingDecoderTest {
         assertThat(unPackedValues[1]).isCloseTo(SECOND_VALUE, within(0.01));
         assertThat(unPackedValues[2]).isCloseTo(THIRD_VALUE, within(0.01));
     }
-    
+
     @Test
     public void testReadGrib2Record() throws IOException, URISyntaxException {
         Grib2Record record = SIMPLE_GRIB_2_RECORD();
@@ -67,7 +74,7 @@ public class SimplePackingDecoderTest {
     @Test
     public void testReadPackedValues() throws IOException, URISyntaxException {
         Grib1Record record = SIMPLE_GRIB_1_RECORD();
-        double[] unPackedValues = decoder.readAllValues(record.getBinaryData().getPackedValues(), record.getGridDescription().getNumberOfPoints(), record.getBinaryData().getBytesForDatum(),record.getProductDefinition().getDecimalScaleFactor(),
+        double[] unPackedValues = decoder.readAllValues(record.getBinaryData().getPackedValues(), record.getGridDescription().getNumberOfPoints(), record.getBinaryData().getNumberOfBitsForDatumPoint(), record.getProductDefinition().getDecimalScaleFactor(),
                 record.getBinaryData().getBinaryScaleFactor(), record.getBinaryData().getReferenceValue());
         assertThat(unPackedValues.length).isEqualTo(3);
         assertThat(unPackedValues[0]).isCloseTo(FIRST_VALUE, within(0.01));
@@ -77,7 +84,7 @@ public class SimplePackingDecoderTest {
 
     private static final double EXPECTED_VALUE_4800 = 4800;
     private static final short FACTOR_DIVISION_1 = 1;
-    private static final int BINARY_SCALE_MINUS_6 = -6;
+    private static final short BINARY_SCALE_MINUS_6 = -6;
     private static final int INPUT_VALUE_5927 = 5927;
     private static final float REFERENCE_VALUE_4707 = 4707.379f;
 
@@ -85,7 +92,7 @@ public class SimplePackingDecoderTest {
         Grib1Record record = new Grib1Record();
 
         Grib1BinaryDataSection bds = new Grib1BinaryDataSection();
-        bds.setBytesForDatum(BITS_PER_VALUE);
+        bds.setNumberOfBitsForDatumPoint(BITS_PER_VALUE);
         bds.setPackedValues(SIMPLE_BYTE_ARRAY);
         bds.setBinaryScaleFactor(BINARY_SCALE_MINUS_6);
         bds.setReferenceValue(REFERENCE_VALUE_4707);
@@ -101,31 +108,23 @@ public class SimplePackingDecoderTest {
         record.setProductDefinition(pds);
         return record;
     }
-    
-    
-    private static final Grib2Record SIMPLE_GRIB_2_RECORD(){
-    	Grib2Record record = new Grib2Record();
-    	Grib2DRS drs = new Grib2DRS();
-    	drs.setNumberOfDataPoints(NUMBER_OF_POINTS);
-    	SimplePackingDRSTemplate simpleDRSTemplate = new SimplePackingDRSTemplate();
-    	simpleDRSTemplate.setBitsPerValue(BITS_PER_VALUE);
-    	simpleDRSTemplate.setBinaryScaleFactor(BINARY_SCALE_MINUS_6);
-    	simpleDRSTemplate.setDecimalScaleFactor(FACTOR_DIVISION_1);
-    	simpleDRSTemplate.setReferenceValue(REFERENCE_VALUE_4707);
-    	
-    	drs.setDataTemplate(simpleDRSTemplate);
-    	Grib2DS ds = new Grib2DS();
-    	ds.setPackedData(SIMPLE_BYTE_ARRAY);
-    	record.setDrs(drs);
-    	record.setDataSection(ds);
-    	return record;
-    }
 
-    private static final int BITS_PER_VALUE = 16;
-    private static final int NUMBER_OF_POINTS = 3;
-    private static final float FIRST_VALUE = 479.99f;
-    private static final float SECOND_VALUE = 470.77f;
-    private static final float THIRD_VALUE = 474.86f;
-    private static final byte[] SIMPLE_BYTE_ARRAY = new byte[]{23,39,0,25,10,80};
+    private static final Grib2Record SIMPLE_GRIB_2_RECORD() {
+        Grib2Record record = new Grib2Record();
+        Grib2DRS drs = new Grib2DRS();
+        drs.setNumberOfDataPoints(NUMBER_OF_POINTS);
+        SimplePackingDRSTemplate simpleDRSTemplate = new SimplePackingDRSTemplate();
+        simpleDRSTemplate.setBitsPerValue(BITS_PER_VALUE);
+        simpleDRSTemplate.setBinaryScaleFactor(BINARY_SCALE_MINUS_6);
+        simpleDRSTemplate.setDecimalScaleFactor(FACTOR_DIVISION_1);
+        simpleDRSTemplate.setReferenceValue(REFERENCE_VALUE_4707);
+
+        drs.setDataTemplate(simpleDRSTemplate);
+        Grib2DS ds = new Grib2DS();
+        ds.setPackedData(SIMPLE_BYTE_ARRAY);
+        record.setDrs(drs);
+        record.setDataSection(ds);
+        return record;
+    }
 
 }

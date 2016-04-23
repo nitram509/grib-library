@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
 import org.meteogroup.griblibrary.grib2.gdstemplates.GaussianTemplateReader;
-import org.meteogroup.griblibrary.grib2.gdstemplates.GridTemplateReader;
 import org.meteogroup.griblibrary.grib2.gdstemplates.RegularLatLonTemplateReader;
 import org.meteogroup.griblibrary.grib2.model.Grib2GDS;
 import org.meteogroup.griblibrary.grib2.model.gdstemplates.GDSTemplate;
@@ -35,10 +34,10 @@ class Grib2GDSReader extends Grib2SectionReader {
 		}
 		gds.setLength(readSectionLength(gdsValues, headerOffSet));
 
-		gds.setNumberOfPoints(BytesToPrimitiveHelper.bytesToInteger(gdsValues[POSITION_NUMBER_OF_POINTS_1 + headerOffSet],
+		gds.setNumberOfPoints(BytesToPrimitiveHelper.asInt(gdsValues[POSITION_NUMBER_OF_POINTS_1 + headerOffSet],
 				gdsValues[POSITION_NUMBER_OF_POINTS_2 + headerOffSet], gdsValues[POSITION_NUMBER_OF_POINTS_3 + headerOffSet],
 				gdsValues[POSITION_NUMBER_OF_POINTS_4 + headerOffSet]));
-		gds.setGridDefinitionTemplateNumber(BytesToPrimitiveHelper.bytesToInteger(gdsValues[POSITION_GRID_DEFINITION_TEMPLATE_NUMBER_1 + headerOffSet],
+		gds.setGridDefinitionTemplateNumber(BytesToPrimitiveHelper.asInt(gdsValues[POSITION_GRID_DEFINITION_TEMPLATE_NUMBER_1 + headerOffSet],
 				gdsValues[POSITION_GRID_DEFINITION_TEMPLATE_NUMBER_2 + headerOffSet]));
 		
 		gds.setGdsTemplate(readGDSTemplate(gds.getGridDefinitionTemplateNumber(), gdsValues, headerOffSet, gds));

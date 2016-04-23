@@ -56,7 +56,7 @@ public class Grib1ProductDefinitionSectionReaderTest {
         Grib1ProductDefinitionSection pds = new Grib1ProductDefinitionSection();
         pds.setSectionLenght(28);
         pds.setParameterTableVersionNumber((byte)128);
-        pds.setIdentificationOfCentre((byte)98);
+        pds.setIdentificationOfCenter((byte)98);
         pds.setGeneratingProcessIdNumber((byte)145);
         pds.setGridIdentification((byte)255);
         pds.setIdenticatorOfParameterAndUnit((byte)41);
@@ -76,7 +76,7 @@ public class Grib1ProductDefinitionSectionReaderTest {
         pds.setHasGDS(true);
         pds.setHasBMS(false);
         pds.setNumberIncludedInAverageOrAccumulation((byte)0);
-        pds.setIdentificationOfSubCentre((byte)0);
+        pds.setIdentificationOfSubCenter((byte)0);
         pds.setDecimalScaleFactor((byte)0);
         return pds;
     }

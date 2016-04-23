@@ -19,8 +19,21 @@ import static org.assertj.core.api.Assertions.within;
  */
 public class SimplePackingIteratorTest {
 
+    private static final byte BITS_PER_VALUE = 16;
+    private static final int NUMBER_OF_POINTS = 3;
+    private static final float FIRST_VALUE = 479.99f;
+    private static final float SECOND_VALUE = 470.77f;
+    private static final float THIRD_VALUE = 474.86f;
+
+    private static final double EXPECTED_VALUE_4800 = 4800;
+    private static final short FACTOR_DIVISION_1 = 1;
+    private static final short BINARY_SCALE_MINUS_6 = -6;
+    private static final int INPUT_VALUE_5927 = 5927;
+    private static final float REFERENCE_VALUE_4707 = 4707.379f;
+
+    private static final byte[] SIMPLE_BYTE_ARRAY = new byte[]{23, 39, 0, 25, 10, 80};
+
     SimplePackingIterator grib1Iterator;
-    SimplePackingIterator grib2Iterator;
 
     @BeforeMethod()
     public void setUp() throws IOException, URISyntaxException {
@@ -28,15 +41,15 @@ public class SimplePackingIteratorTest {
     }
 
     @DataProvider(name = "unpackingTestCases")
-    public Object[][] unpackingTestCases(){
+    public Object[][] unpackingTestCases() {
         return new Object[][]{
-                new Object[]{INPUT_VALUE_5927, FACTOR_DIVISION_1, BINARY_SCALE_MINUS_6, REFERENCE_VALUE_4707 ,EXPECTED_VALUE_4800}
+                new Object[]{INPUT_VALUE_5927, FACTOR_DIVISION_1, BINARY_SCALE_MINUS_6, REFERENCE_VALUE_4707, EXPECTED_VALUE_4800}
         };
     }
 
     @Test(dataProvider = "unpackingTestCases")
-    public void testGoodValues(int value, int factorDivision, int binaryScale, float referenceValue, double expectedResult){
-        double binaryScalePowered = Math.pow(2,binaryScale);
+    public void testGoodValues(int value, int factorDivision, int binaryScale, float referenceValue, double expectedResult) {
+        double binaryScalePowered = Math.pow(2, binaryScale);
         double actualValue = grib1Iterator.decodeValue(value, factorDivision, binaryScalePowered, referenceValue);
         assertThat(actualValue).isCloseTo(expectedResult, within(0.1));
     }
@@ -48,17 +61,11 @@ public class SimplePackingIteratorTest {
         assertThat(grib1Iterator.nextDouble()).isCloseTo(THIRD_VALUE, within(0.01));
     }
 
-    private static final double EXPECTED_VALUE_4800 = 4800;
-    private static final short FACTOR_DIVISION_1 = 1;
-    private static final int BINARY_SCALE_MINUS_6 = -6;
-    private static final int INPUT_VALUE_5927 = 5927;
-    private static final float REFERENCE_VALUE_4707 = 4707.379f;
-
     private static final Grib1Record SIMPLE_GRIB_1_RECORD() throws IOException, URISyntaxException {
         Grib1Record record = new Grib1Record();
 
         Grib1BinaryDataSection bds = new Grib1BinaryDataSection();
-        bds.setBytesForDatum(BITS_PER_VALUE);
+        bds.setNumberOfBitsForDatumPoint(BITS_PER_VALUE);
         bds.setPackedValues(SIMPLE_BYTE_ARRAY);
         bds.setBinaryScaleFactor(BINARY_SCALE_MINUS_6);
         bds.setReferenceValue(REFERENCE_VALUE_4707);
@@ -74,14 +81,5 @@ public class SimplePackingIteratorTest {
         record.setProductDefinition(pds);
         return record;
     }
-
-
-    private static final int BITS_PER_VALUE = 16;
-    private static final int NUMBER_OF_POINTS = 3;
-    private static final float FIRST_VALUE = 479.99f;
-    private static final float SECOND_VALUE = 470.77f;
-    private static final float THIRD_VALUE = 474.86f;
-    private static final byte[] SIMPLE_BYTE_ARRAY = new byte[]{23,39,0,25,10,80};
-
 
 }
