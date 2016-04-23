@@ -1,22 +1,16 @@
 package org.meteogroup.griblibrary.grib2.drstemplates;
 
-import java.io.IOException;
-import java.util.Arrays;
-
-import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
-import org.meteogroup.griblibrary.exception.GribReaderException;
-import org.meteogroup.griblibrary.grib2.model.drstemplates.BoustrophedonicSecondOrderDRSTemplate;
 import org.meteogroup.griblibrary.grib2.model.drstemplates.DRSTemplate;
 import org.meteogroup.griblibrary.grib2.model.drstemplates.SimplePackingDRSTemplate;
-import org.meteogroup.griblibrary.util.BitReader;
 import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
 
+import static org.meteogroup.griblibrary.util.BytesToPrimitiveHelper.asInt;
+import static org.meteogroup.griblibrary.util.BytesToPrimitiveHelper.asSignedInt;
+
 /**
- *
  * @author Pauw
- *
  */
-public class SimplePackingReader implements DataTemplateReader{
+public class SimplePackingReader implements DataTemplateReader {
 
     //see http://grepcode.com/file/repo1.maven.org/maven2/edu.ucar/grib/4.5.4/ucar/nc2/grib/grib2/Grib2Drs.java#Grib2Drs.Type50002
     //and // according to https://github.com/erdc-cm/grib_api/blob/master/definitions/grib2/template.5.50002.def
@@ -34,28 +28,23 @@ public class SimplePackingReader implements DataTemplateReader{
     static final int POSITION_BITSPERVALUE = 19;
 
 
-    public SimplePackingReader(){
+    public SimplePackingReader() {
         //this.bytes = bytes;
     }
 
     @Override
-    public DRSTemplate readTemplate(byte[] bytes,int headerOffSet) throws GribReaderException {
+    public DRSTemplate readTemplate(byte[] bytes, int headerOffSet) {
+        if (bytes == null) throw new IllegalArgumentException("argument bytes are not allowed to be null.");
         SimplePackingDRSTemplate simpleTemplate = new SimplePackingDRSTemplate();
-        if (bytes ==null){
-            throw new GribReaderException("section not read in yet");
-        }
-        try {
-            simpleTemplate.setReferenceValue(BytesToPrimitiveHelper.bytesToFloat(//.bytesToFloatAsIBM(
-                    bytes[POSITION_REFERENCE_VALUE1+headerOffSet],
-                    bytes[POSITION_REFERENCE_VALUE2+headerOffSet],
-                    bytes[POSITION_REFERENCE_VALUE3+headerOffSet],
-                    bytes[POSITION_REFERENCE_VALUE4+headerOffSet]));
-            simpleTemplate.setBinaryScaleFactor(BytesToPrimitiveHelper.signedBytesToInt(bytes[POSITION_BINARYSCALEFACTOR1+headerOffSet] ,bytes[POSITION_BINARYSCALEFACTOR2+headerOffSet] ));
-            simpleTemplate.setDecimalScaleFactor(BytesToPrimitiveHelper.signedBytesToInt(bytes[POSITION_DECIMALSCALEFACTOR1+headerOffSet],bytes[POSITION_DECIMALSCALEFACTOR2+headerOffSet]));
-            simpleTemplate.setBitsPerValue(bytes[POSITION_BITSPERVALUE+headerOffSet] &0xFF);
-        } catch (BinaryNumberConversionException e) {
-            throw new GribReaderException(e.getMessage(), e);
-        }
+        simpleTemplate.setReferenceValue(BytesToPrimitiveHelper.bytesToFloat(//.bytesToFloatAsIBM(
+                bytes[POSITION_REFERENCE_VALUE1 + headerOffSet],
+                bytes[POSITION_REFERENCE_VALUE2 + headerOffSet],
+                bytes[POSITION_REFERENCE_VALUE3 + headerOffSet],
+                bytes[POSITION_REFERENCE_VALUE4 + headerOffSet]));
+
+        simpleTemplate.setBinaryScaleFactor(asSignedInt(bytes[POSITION_BINARYSCALEFACTOR1 + headerOffSet], bytes[POSITION_BINARYSCALEFACTOR2 + headerOffSet]));
+        simpleTemplate.setDecimalScaleFactor(asSignedInt(bytes[POSITION_DECIMALSCALEFACTOR1 + headerOffSet], bytes[POSITION_DECIMALSCALEFACTOR2 + headerOffSet]));
+        simpleTemplate.setBitsPerValue(asInt(bytes[POSITION_BITSPERVALUE + headerOffSet]));
         return simpleTemplate;
     }
 }

@@ -141,13 +141,13 @@ public class Grib1RecordReaderTest {
 
     private static final Grib1GridDescriptionSection LENGTH_ONLY_GDS(){
         Grib1GridDescriptionSection gds = new Grib1GridDescriptionSection();
-        gds.setGdsLenght(8);
+        gds.setSectionLenght(8);
         return gds;
     }
 
     private static final Grib1BinaryDataSection LENGTH_ONLY_BDS(){
         Grib1BinaryDataSection bds = new Grib1BinaryDataSection();
-        bds.setBdsLength(8);
+        bds.setSectionLength(8);
         return bds;
     }
 

@@ -66,7 +66,7 @@ public class Grib1BinaryDataSectionReaderTest {
         Grib1BinaryDataSection actualObject = bdsReader.readBDSValues(inputValues, offSet);
         assertThat(actualObject).isEqualTo(expectedObject);
         assertThat(actualObject.getPackedValues()).isNotNull();
-        assertThat(actualObject.getPackedValues().length).isEqualTo(actualObject.getBdsLength()-END_OF_META_DATA);
+        assertThat(actualObject.getPackedValues().length).isEqualTo(actualObject.getSectionLength()-END_OF_META_DATA);
     }
 
     @Test(dataProvider = "valuesForBinayScaleFactor")
@@ -81,7 +81,6 @@ public class Grib1BinaryDataSectionReaderTest {
         assertThat(actualValues).isEqualTo(expectedValues);
     }
 
-    private static final byte[] ARRAY_WITH_LENGTH_OF_28 = new byte[]{0,0,28};
     private static final byte[] GOOD_BDS_ARRAY() throws URISyntaxException, IOException {
         String filename = "ecmwf-grib1-example-binary-data-section.grb";
 
@@ -103,10 +102,10 @@ public class Grib1BinaryDataSectionReaderTest {
 
     private static final Grib1BinaryDataSection GOOD_EXAMPLE_SIMPLE_PACKING_BDS_OBJECT(){
         Grib1BinaryDataSection bds = new Grib1BinaryDataSection();
-        bds.setBdsLength(4281416);
+        bds.setSectionLength(4281416);
         bds.setBinaryScaleFactor((short) -9);
         bds.setReferenceValue(208.2547f);
-        bds.setBytesForDatum(16);
+        bds.setNumberOfBitsForDatumPoint((byte) 16);
         bds.setGridPointData(true);
         bds.setSphericalHarmonicCoefficient(false);
         bds.setSimplePacking(true);

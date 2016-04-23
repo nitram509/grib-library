@@ -15,7 +15,7 @@ public class SimplePackingDecoder implements Decoder {
 
     @Override
     public double[] decodeFromGrib1(Grib1Record record) {
-        return this.readAllValues(record.getBinaryData().getPackedValues(), record.getGridDescription().getNumberOfPoints(), record.getBinaryData().getBytesForDatum(), record.getProductDefinition().getDecimalScaleFactor(),
+        return this.readAllValues(record.getBinaryData().getPackedValues(), record.getGridDescription().getNumberOfPoints(), record.getBinaryData().getNumberOfBitsForDatumPoint(), record.getProductDefinition().getDecimalScaleFactor(),
                 record.getBinaryData().getBinaryScaleFactor(), record.getBinaryData().getReferenceValue());
     }
 

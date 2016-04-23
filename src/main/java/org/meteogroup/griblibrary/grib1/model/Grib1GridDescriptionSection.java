@@ -11,35 +11,16 @@ import org.meteogroup.griblibrary.gis.LatLon;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"latLons", "pointsAlongLatitudeCircleForGaussian"})
-@ToString(exclude = {"latLons", "pointsAlongLatitudeCircleForGaussian"})
 public class Grib1GridDescriptionSection {
 
-    private int gdsLenght;
-    private int numberOfVerticalsCoordinateParams;
+    private int sectionLenght;
+    private byte numberOfVerticalsCoordinateParams;
     private int locationOfVerticalCoordinateParams;
     private int locationListPer;
-    private int representationType;
+    private byte dataRepresentationType;
     private int numberOfPoints;
 
-    private float north;
-    private float south;
-    private int lat1;
-    private int lat2;
-    private int lon1;
-    private int lon2;
-
-    private int resolution;
-    private float longitudeIncrement;
-    private int numberOfCirclesBetweenPoleAndEquator;
+    Grib1GridDefinition gridDefinition;
 
     private LatLon[] latLons;
-
-    private int pointsAlongLatitudeCircle;
-    private int[] pointsAlongLatitudeCircleForGaussian;
-    private int pointsAlongLongitudeMeridian;
-
-    private boolean scanModeIIsPositive;
-    private boolean scanModeJIsPositve;
-    private boolean scanModeJIsConsectuve;
 }

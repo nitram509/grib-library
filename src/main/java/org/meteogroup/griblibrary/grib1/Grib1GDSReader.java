@@ -1,9 +1,9 @@
 package org.meteogroup.griblibrary.grib1;
 
-import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
 import org.meteogroup.griblibrary.grib1.model.Grib1GridDescriptionSection;
-import org.meteogroup.griblibrary.util.BitChecker;
-import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
+import org.meteogroup.griblibrary.grib1.model.Grib1LatLonGrib1GridDefinition;
+
+import static org.meteogroup.griblibrary.util.BytesToPrimitiveHelper.asInt;
 
 /**
  * Created by roijen on 23-Oct-15.
@@ -16,84 +16,41 @@ class Grib1GDSReader {
     private static final int POSITION_GDS_NUMBER_OF_VERTICAL_COORDINATE_PARAMS = 3;
     private static final int POSITION_GDS_LOCATION_OF_VERTICAL_PARAMS = 4;
     private static final int POSITION_GDS_REPRESENTATION_TYPE = 5;
-    private static final int POSITION_GDS_POINTS_ALONG_LATITUDE_CIRCLE_1 = 6;
-    private static final int POSITION_GDS_POINTS_ALONG_LATITUDE_CIRCLE_2 = 7;
-    private static final int POSITION_GDS_POINTS_ALONG_LONGITUDE_MERIDIAN_1 = 8;
-    private static final int POSITION_GDS_POINTS_ALONG_LONGITUDE_MERIDIAN_2 = 9;
-    private static final int POSITION_GDS_LAT_1_1 = 10;
-    private static final int POSITION_GDS_LAT_1_2 = 11;
-    private static final int POSITION_GDS_LAT_1_3 = 12;
-    private static final int POSITION_GDS_LON_1_1 = 13;
-    private static final int POSITION_GDS_LON_1_2 = 14;
-    private static final int POSITION_GDS_LON_1_3 = 15;
-    private static final int POSITION_GDS_RESOLUTION = 16;
-    private static final int POSITION_GDS_LAT_2_1 = 17;
-    private static final int POSITION_GDS_LAT_2_2 = 18;
-    private static final int POSITION_GDS_LAT_2_3 = 19;
-    private static final int POSITION_GDS_LON_2_1 = 20;
-    private static final int POSITION_GDS_LON_2_2 = 21;
-    private static final int POSITION_GDS_LON_2_3 = 22;
-    private static final int POSITION_GDS_LONGITUDE_INCREMENT_1 = 23;
-    private static final int POSITION_GDS_LONGITUDE_INCREMENT_2 = 24;
-    private static final int POSITION_GDS_NUMBER_OF_CIRCLES_BETWEEN_POLE_AND_EQUATOR_1 = 25;
-    private static final int POSITION_GDS_NUMBER_OF_CIRCLES_BETWEEN_POLE_AND_EQUATOR_2 = 26;
-    private static final int POSITION_GDS_SCANNING_MODE_FLAGS = 27;
-    private static final int SCANNING_MODE_I_BIT = 1;
-    private static final int SCANNING_MODE_J_BIT = 2;
-    private static final int SCANNING_MODE_DIRECTION_BIT = 3;
 
-    public int readGDSLength(byte[] inputValues, int offSet) throws BinaryNumberConversionException {
-        return BytesToPrimitiveHelper.bytesToInteger(inputValues[POSITION_GDS_LENGTH_1 + offSet], inputValues[POSITION_GDS_LENGTH_2 + offSet], inputValues[POSITION_GDS_LENGTH_3 + offSet]);
+    private final LatLonGridDefinitionReader latLonGridDefinitionReader = new LatLonGridDefinitionReader();
+
+    public int readGDSLength(byte[] inputValues, int offSet) {
+        return asInt(
+                inputValues[POSITION_GDS_LENGTH_1 + offSet],
+                inputValues[POSITION_GDS_LENGTH_2 + offSet],
+                inputValues[POSITION_GDS_LENGTH_3 + offSet]
+        );
     }
 
-    public Grib1GridDescriptionSection readGDSValues(byte[] inputValues, int offSet) throws BinaryNumberConversionException {
-        Grib1GridDescriptionSection objectToWriteInto= new Grib1GridDescriptionSection();
-        objectToWriteInto.setGdsLenght(this.readGDSLength(inputValues, offSet));
-        objectToWriteInto.setNumberOfVerticalsCoordinateParams((short) (inputValues[POSITION_GDS_NUMBER_OF_VERTICAL_COORDINATE_PARAMS + offSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToWriteInto.setLocationOfVerticalCoordinateParams((short) (inputValues[POSITION_GDS_LOCATION_OF_VERTICAL_PARAMS + offSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToWriteInto.setRepresentationType((short) (inputValues[POSITION_GDS_REPRESENTATION_TYPE + offSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        //InputValues 5 gives the grid. For now Gaussian only. Simply proceeding.
-        objectToWriteInto.setPointsAlongLatitudeCircle(BytesToPrimitiveHelper.bytesToInteger(inputValues[POSITION_GDS_POINTS_ALONG_LATITUDE_CIRCLE_1 + offSet], inputValues[POSITION_GDS_POINTS_ALONG_LATITUDE_CIRCLE_2 + offSet]));
-        objectToWriteInto.setPointsAlongLongitudeMeridian(BytesToPrimitiveHelper.bytesToInteger(inputValues[POSITION_GDS_POINTS_ALONG_LONGITUDE_MERIDIAN_1 + offSet], inputValues[POSITION_GDS_POINTS_ALONG_LONGITUDE_MERIDIAN_2 + offSet]));
-        objectToWriteInto.setLat1(BytesToPrimitiveHelper.signedBytesToInt(inputValues[POSITION_GDS_LAT_1_1 + offSet], inputValues[POSITION_GDS_LAT_1_2 + offSet], inputValues[POSITION_GDS_LAT_1_3 + offSet]));
-        objectToWriteInto.setLon1(BytesToPrimitiveHelper.signedBytesToInt(inputValues[POSITION_GDS_LON_1_1 + offSet], inputValues[POSITION_GDS_LON_1_2 + offSet], inputValues[POSITION_GDS_LON_1_3 + offSet]));
-        objectToWriteInto.setResolution((inputValues[POSITION_GDS_RESOLUTION + offSet] & BytesToPrimitiveHelper.BYTE_MASK));
-        objectToWriteInto.setLat2(BytesToPrimitiveHelper.signedBytesToInt(inputValues[POSITION_GDS_LAT_2_1 + offSet], inputValues[POSITION_GDS_LAT_2_2 + offSet], inputValues[POSITION_GDS_LAT_2_3 + offSet]));
-        objectToWriteInto.setLon2(BytesToPrimitiveHelper.signedBytesToInt(inputValues[POSITION_GDS_LON_2_1 + offSet], inputValues[POSITION_GDS_LON_2_2 + offSet], inputValues[POSITION_GDS_LON_2_3 + offSet]));
-        objectToWriteInto.setLongitudeIncrement(BytesToPrimitiveHelper.bytesToInteger(inputValues[POSITION_GDS_LONGITUDE_INCREMENT_1 + offSet], inputValues[POSITION_GDS_LONGITUDE_INCREMENT_2 + offSet])/1000f);
-        objectToWriteInto.setNumberOfCirclesBetweenPoleAndEquator(BytesToPrimitiveHelper.bytesToInteger(inputValues[POSITION_GDS_NUMBER_OF_CIRCLES_BETWEEN_POLE_AND_EQUATOR_1 + offSet], inputValues[POSITION_GDS_NUMBER_OF_CIRCLES_BETWEEN_POLE_AND_EQUATOR_2 + offSet]));
-
-        //A positive I would come from a FALSE bit...
-        objectToWriteInto.setScanModeIIsPositive(! BitChecker.testBit(inputValues[POSITION_GDS_SCANNING_MODE_FLAGS + offSet],SCANNING_MODE_I_BIT));
-        //A positive J would come from a TRUE bit....
-        objectToWriteInto.setScanModeJIsPositve(BitChecker.testBit(inputValues[POSITION_GDS_SCANNING_MODE_FLAGS + offSet], SCANNING_MODE_J_BIT));
-        objectToWriteInto.setScanModeJIsConsectuve(BitChecker.testBit(inputValues[POSITION_GDS_SCANNING_MODE_FLAGS + offSet], SCANNING_MODE_DIRECTION_BIT));
-
-        objectToWriteInto.setNorth(this.getNorth(objectToWriteInto.getLat1(), objectToWriteInto.getLat2()));
-        objectToWriteInto.setSouth(this.getSouth(objectToWriteInto.getLat1(), objectToWriteInto.getLat2()));
-        objectToWriteInto = this.generateNisAndNumberOfPoints(objectToWriteInto, inputValues, offSet);
-        return objectToWriteInto;
+    public Grib1GridDescriptionSection readGDSValues(byte[] buffer, int offset) {
+        Grib1GridDescriptionSection gridDescriptionSection = new Grib1GridDescriptionSection();
+        gridDescriptionSection.setSectionLenght(readGDSLength(buffer, offset));
+        gridDescriptionSection.setNumberOfVerticalsCoordinateParams(buffer[POSITION_GDS_NUMBER_OF_VERTICAL_COORDINATE_PARAMS + offset]);
+        gridDescriptionSection.setLocationOfVerticalCoordinateParams(buffer[POSITION_GDS_LOCATION_OF_VERTICAL_PARAMS + offset]);
+        gridDescriptionSection.setDataRepresentationType(buffer[POSITION_GDS_REPRESENTATION_TYPE + offset]);
+        assert latLonGridDefinitionReader.accepts(gridDescriptionSection.getDataRepresentationType());
+        gridDescriptionSection.setGridDefinition(latLonGridDefinitionReader.read(buffer, offset));
+        gridDescriptionSection = generateNisAndNumberOfPoints(gridDescriptionSection, buffer, offset);
+        return gridDescriptionSection;
     }
 
-    public float getNorth(int lat1, int lat2) {
-        return (lat1 < lat2 ? lat1 : lat2) / 1000f;
-    }
-
-    public float getSouth(int lat1, int lat2) {
-        return (lat1 > lat2 ? lat1 : lat2) / 1000f;
-    }
-
-    public Grib1GridDescriptionSection generateNisAndNumberOfPoints(Grib1GridDescriptionSection gds, byte[] inputValues, int offSet) throws BinaryNumberConversionException {
-        int[] nis = new int[gds.getPointsAlongLongitudeMeridian()];
+    Grib1GridDescriptionSection generateNisAndNumberOfPoints(Grib1GridDescriptionSection gds, byte[] buffer, int offSet) {
+        final Grib1LatLonGrib1GridDefinition gridDefinition = (Grib1LatLonGrib1GridDefinition) gds.getGridDefinition();
+        int[] nis = new int[gridDefinition.getPointsAlongLongitudeMeridian()];
         int numberOfPoints = 0;
-        for (int x = 0; x < gds.getPointsAlongLongitudeMeridian() ; x++){
+        for (int x = 0; x < gridDefinition.getPointsAlongLongitudeMeridian(); x++) {
             //Position -1 (for array) +x*2 (for pos)
-            int position = offSet + (gds.getLocationOfVerticalCoordinateParams()+(x*2)-1);
-            nis[x] = BytesToPrimitiveHelper.bytesToInteger(inputValues[position], inputValues[position+1]);
+            int position = offSet + (gds.getLocationOfVerticalCoordinateParams() + (x * 2) - 1);
+            nis[x] = asInt(buffer[position], buffer[position + 1]);
             numberOfPoints += nis[x];
         }
         gds.setNumberOfPoints(numberOfPoints);
-        gds.setPointsAlongLatitudeCircleForGaussian(nis);
+        gridDefinition.setPointsAlongLatitudeCircleForGaussian(nis);
         return gds;
     }
 }

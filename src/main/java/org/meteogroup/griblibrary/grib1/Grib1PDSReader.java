@@ -1,15 +1,13 @@
 package org.meteogroup.griblibrary.grib1;
 
-import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
 import org.meteogroup.griblibrary.grib1.model.Grib1ProductDefinitionSection;
 import org.meteogroup.griblibrary.util.BitChecker;
-import org.meteogroup.griblibrary.util.BytesToPrimitiveHelper;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.meteogroup.griblibrary.util.BytesToPrimitiveHelper.asInt;
 import static org.meteogroup.griblibrary.util.BytesToPrimitiveHelper.asShort;
-import static org.meteogroup.griblibrary.util.BytesToPrimitiveHelper.bytesToInteger;
 
 /**
  * Created by roijen on 21-Oct-15.
@@ -64,16 +62,20 @@ class Grib1PDSReader {
     private static final int POSITION_PDS_DECIMAL_SCALE_FACTOR_2 = 27;
 
 
-    public int readPDSLength(byte[] values, int headerOffSet) throws BinaryNumberConversionException {
-        return bytesToInteger(values[POSITION_PDS_LENGTH_1 + headerOffSet], values[POSITION_PDS_LENGTH_2 + headerOffSet], values[POSITION_PDS_LENGTH_3 + headerOffSet]);
+    public int readPDSLength(byte[] values, int offset) {
+        return asInt(
+                values[POSITION_PDS_LENGTH_1 + offset],
+                values[POSITION_PDS_LENGTH_2 + offset],
+                values[POSITION_PDS_LENGTH_3 + offset]
+        );
     }
 
-    public Grib1ProductDefinitionSection readPDSValues(byte[] values, int headerOffSet) throws BinaryNumberConversionException {
+    public Grib1ProductDefinitionSection readPDSValues(byte[] values, int headerOffSet) {
 
         Grib1ProductDefinitionSection objectToReadInto = new Grib1ProductDefinitionSection();
         objectToReadInto.setSectionLenght(readPDSLength(values, headerOffSet));
         objectToReadInto.setParameterTableVersionNumber(values[POSITION_PDS_TABLE_VERSION_NUMBER + headerOffSet]);
-        objectToReadInto.setIdentificationOfCentre(values[POSITION_PDS_IDENTIFICATION_OF_CENTRE + headerOffSet]);
+        objectToReadInto.setIdentificationOfCenter(values[POSITION_PDS_IDENTIFICATION_OF_CENTRE + headerOffSet]);
         objectToReadInto.setGeneratingProcessIdNumber(values[POSITION_PDS_GENERATING_PROCESS_NUMBER + headerOffSet]);
         objectToReadInto.setGridIdentification(values[POSITION_PDS_GRIB_IDENTIFICATION + headerOffSet]);
 
@@ -106,7 +108,7 @@ class Grib1PDSReader {
 
         objectToReadInto.setNumberOfMissingFromAverageOrAcummulation(values[POSITION_PDS_NUMBER_OF_MISSING_FROM_AVERAGE_OR_ACCUMULATION + headerOffSet]);
         objectToReadInto.setIssueTimeCentury(values[POSITION_PDS_ISSUE_TIME_CENTURY + headerOffSet]);
-        objectToReadInto.setIdentificationOfSubCentre(values[POSITION_PDS_IDENTIFICATION_OF_SUBCENTRE + headerOffSet]);
+        objectToReadInto.setIdentificationOfSubCenter(values[POSITION_PDS_IDENTIFICATION_OF_SUBCENTRE + headerOffSet]);
 
         objectToReadInto.setDecimalScaleFactor(asShort(values[POSITION_PDS_DECIMAL_SCALE_FACTOR_1 + headerOffSet], values[POSITION_PDS_DECIMAL_SCALE_FACTOR_2 + headerOffSet]));
 

@@ -15,10 +15,10 @@ import lombok.ToString;
 @ToString(exclude = {"packedValues"})
 public class Grib1BinaryDataSection {
 
-    private int bdsLength;
-    private int binaryScaleFactor;
+    private int sectionLength;
+    private short binaryScaleFactor;
     private float referenceValue;
-    private int bytesForDatum;
+    private byte numberOfBitsForDatumPoint;
 
     private boolean gridPointData;
     private boolean sphericalHarmonicCoefficient;

@@ -53,31 +53,26 @@ public class Grib1RecordReader {
 
     public int readRecordLength(byte[] bufferValues) throws GribReaderException {
         int length = 0;
-        try {
-            length = BytesToPrimitiveHelper.bytesToInteger(bufferValues[POSITION_RECORDLENGTH1], bufferValues[POSITION_RECORDLENGTH2], bufferValues[POSITION_RECORDLENGTH3]);
-            //length = BytesToPrimitiveHelper.signedBytesToInt(bufferValues[POSITION_RECORDLENGTH1], bufferValues[POSITION_RECORDLENGTH2], bufferValues[POSITION_RECORDLENGTH3]);
-            byte[] tmp = new byte[3];
-            tmp[0] = bufferValues[POSITION_RECORDLENGTH1];
-            tmp[1] = bufferValues[POSITION_RECORDLENGTH2];
-            tmp[2] = bufferValues[POSITION_RECORDLENGTH3];
-            int i = (tmp[0] & 0xFF) << 16 | (tmp[1] & 0xFF) << 8 | (tmp[2] & 0xFF);
-
-        } catch (BinaryNumberConversionException e) {
-            throw new GribReaderException(e.getMessage(), e);
-        }
+        length = BytesToPrimitiveHelper.asInt(bufferValues[POSITION_RECORDLENGTH1], bufferValues[POSITION_RECORDLENGTH2], bufferValues[POSITION_RECORDLENGTH3]);
+        //length = BytesToPrimitiveHelper.signedBytesToInt(bufferValues[POSITION_RECORDLENGTH1], bufferValues[POSITION_RECORDLENGTH2], bufferValues[POSITION_RECORDLENGTH3]);
+        byte[] tmp = new byte[3];
+        tmp[0] = bufferValues[POSITION_RECORDLENGTH1];
+        tmp[1] = bufferValues[POSITION_RECORDLENGTH2];
+        tmp[2] = bufferValues[POSITION_RECORDLENGTH3];
+        int i = (tmp[0] & 0xFF) << 16 | (tmp[1] & 0xFF) << 8 | (tmp[2] & 0xFF);
         if (length < 8) {
             throw new GribReaderException("The suggested length in the record header is invalid.");
         }
         return length;
     }
 
-    public Grib1Record readCompleteRecord(Grib1Record grib1Record, byte[] bufferValues, int headerOffSet) throws BinaryNumberConversionException, GribReaderException {
+    public Grib1Record readCompleteRecord(Grib1Record grib1Record, byte[] bufferValues, int headerOffSet) throws GribReaderException, BinaryNumberConversionException {
         Grib1ProductDefinitionSection pds = pdsReader.readPDSValues(bufferValues, headerOffSet);
         grib1Record.setProductDefinition(pds);
         headerOffSet += pds.getSectionLenght();
         Grib1GridDescriptionSection gds = gdsReader.readGDSValues(bufferValues, headerOffSet);
         grib1Record.setGridDescription(gds);
-        headerOffSet += gds.getGdsLenght();
+        headerOffSet += gds.getSectionLenght();
         Grib1BinaryDataSection bds = bdsReader.readBDSValues(bufferValues, headerOffSet);
         grib1Record.setBinaryData(bds);
         this.checkIfGribFileEndsValid(bufferValues);

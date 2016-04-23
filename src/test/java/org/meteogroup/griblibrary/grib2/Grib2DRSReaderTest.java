@@ -85,12 +85,7 @@ public class Grib2DRSReaderTest {
 	
 	@Test(dataProvider = "goodDRSDataSet")
 	public void testReadDRS(byte[] testArray, int headerOffSet, int expectedValue, Grib2DRS expectedResponseObject) throws GribReaderException {
-		int length = 0;
-		try {
-			length = drsReader.readSectionLength(testArray, headerOffSet);
-		} catch (BinaryNumberConversionException e) {
-			throw new GribReaderException(e.getMessage(),e);
-		}
+		int length = drsReader.readSectionLength(testArray, headerOffSet);
 		assertThat(length).isEqualTo(expectedValue);
 		
 		Grib2DRS drs = drsReader.readDRSValues(testArray,headerOffSet);

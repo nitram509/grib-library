@@ -28,7 +28,8 @@ public class Grib1ProductDefinitionSection {
     private int sectionLenght;
 
     private byte parameterTableVersionNumber;
-    private byte identificationOfCentre;
+    private byte identificationOfCenter;
+    private byte identificationOfSubCenter;
     private byte generatingProcessIdNumber;
     private byte gridIdentification;
     private byte identicatorOfParameterAndUnit;
@@ -47,7 +48,6 @@ public class Grib1ProductDefinitionSection {
     private byte timeRangeIndicator = -1;
     private short numberIncludedInAverageOrAccumulation;
     private byte numberOfMissingFromAverageOrAcummulation;
-    private byte identificationOfSubCentre;
     private short decimalScaleFactor;
 
     private boolean hasOnlyOneLevelOrLayerValue;

@@ -23,7 +23,7 @@ public class SimplePackingIterator implements PrimitiveIterator.OfDouble {
     BitReader bitReader;
 
     public SimplePackingIterator(Grib1Record record){
-        initValues(record.getBinaryData().getPackedValues(), record.getGridDescription().getNumberOfPoints(), record.getBinaryData().getBytesForDatum(), record.getProductDefinition().getDecimalScaleFactor(),
+        initValues(record.getBinaryData().getPackedValues(), record.getGridDescription().getNumberOfPoints(), record.getBinaryData().getNumberOfBitsForDatumPoint(), record.getProductDefinition().getDecimalScaleFactor(),
                 record.getBinaryData().getBinaryScaleFactor(), record.getBinaryData().getReferenceValue());
     }
 
