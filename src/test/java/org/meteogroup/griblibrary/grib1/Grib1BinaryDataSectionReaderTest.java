@@ -12,6 +12,7 @@ import java.io.RandomAccessFile;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -77,7 +78,7 @@ public class Grib1BinaryDataSectionReaderTest {
 
     @Test(dataProvider = "valuesForSlicing")
     public void testArraySlicer(byte[] inputValues, int slicePoint, int bdsLength, byte[] expectedValues){
-        byte[] actualValues = bdsReader.sliceArrayForGribField(inputValues, slicePoint, bdsLength);
+        byte[] actualValues = Arrays.copyOfRange(inputValues, slicePoint, bdsLength);
         assertThat(actualValues).isEqualTo(expectedValues);
     }
 

@@ -16,6 +16,7 @@ class Grib1GDSReader {
     private static final int POSITION_GDS_NUMBER_OF_VERTICAL_COORDINATE_PARAMS = 3;
     private static final int POSITION_GDS_LOCATION_OF_VERTICAL_PARAMS = 4;
     private static final int POSITION_GDS_REPRESENTATION_TYPE = 5;
+    private static final int POSITION_GDS_NUMBER_OF_POINTS_IN_EACH_ROW = 32;
 
     private final LatLonGridDefinitionReader latLonGridDefinitionReader = new LatLonGridDefinitionReader();
 
@@ -35,11 +36,11 @@ class Grib1GDSReader {
         gridDescriptionSection.setDataRepresentationType(buffer[POSITION_GDS_REPRESENTATION_TYPE + offset]);
         assert latLonGridDefinitionReader.accepts(gridDescriptionSection.getDataRepresentationType());
         gridDescriptionSection.setGridDefinition(latLonGridDefinitionReader.read(buffer, offset));
-        gridDescriptionSection = generateNisAndNumberOfPoints(gridDescriptionSection, buffer, offset);
+        enrichNisAndNumberOfPoints(gridDescriptionSection, buffer, POSITION_GDS_NUMBER_OF_POINTS_IN_EACH_ROW + offset);
         return gridDescriptionSection;
     }
 
-    Grib1GridDescriptionSection generateNisAndNumberOfPoints(Grib1GridDescriptionSection gds, byte[] buffer, int offSet) {
+    void enrichNisAndNumberOfPoints(Grib1GridDescriptionSection gds, byte[] buffer, int offSet) {
         final Grib1LatLonGrib1GridDefinition gridDefinition = (Grib1LatLonGrib1GridDefinition) gds.getGridDefinition();
         int[] nis = new int[gridDefinition.getPointsAlongLongitudeMeridian()];
         int numberOfPoints = 0;
@@ -51,6 +52,5 @@ class Grib1GDSReader {
         }
         gds.setNumberOfPoints(numberOfPoints);
         gridDefinition.setPointsAlongLatitudeCircleForGaussian(nis);
-        return gds;
     }
 }

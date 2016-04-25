@@ -1,6 +1,7 @@
 package org.meteogroup.griblibrary.grib1;
 
 import org.meteogroup.griblibrary.exception.BinaryNumberConversionException;
+import org.meteogroup.griblibrary.geometry.Rectangle;
 import org.meteogroup.griblibrary.grib1.model.Grib1GridDescriptionSection;
 import org.meteogroup.griblibrary.grib1.model.Grib1LatLonGrib1GridDefinition;
 import org.testng.annotations.BeforeMethod;
@@ -70,12 +71,14 @@ public class Grib1GridDescriptionSectionReaderTest {
 
         Grib1LatLonGrib1GridDefinition gd = (Grib1LatLonGrib1GridDefinition) gds.getGridDefinition();
         Grib1LatLonGrib1GridDefinition expectedGd = (Grib1LatLonGrib1GridDefinition) GOOD_GDS_OBJECT().getGridDefinition();
-        assertThat(gd.getNorth()).isEqualTo(expectedGd.getNorth());
-        assertThat(gd.getSouth()).isEqualTo(expectedGd.getSouth());
-        assertThat(gd.getLat1()).isEqualTo(expectedGd.getLat1());
-        assertThat(gd.getLat2()).isEqualTo(expectedGd.getLat2());
-        assertThat(gd.getLon1()).isEqualTo(expectedGd.getLon1());
-        assertThat(gd.getLon2()).isEqualTo(expectedGd.getLon2());
+        assertThat(gd.getBoundingBox().north()).isEqualTo(expectedGd.getBoundingBox().north());
+        assertThat(gd.getBoundingBox().east()).isEqualTo(expectedGd.getBoundingBox().east());
+        assertThat(gd.getBoundingBox().south()).isEqualTo(expectedGd.getBoundingBox().south());
+        assertThat(gd.getBoundingBox().west()).isEqualTo(expectedGd.getBoundingBox().west());
+        assertThat(gd.getLat1InMilliDegree()).isEqualTo(expectedGd.getLat1InMilliDegree());
+        assertThat(gd.getLat2InMilliDegree()).isEqualTo(expectedGd.getLat2InMilliDegree());
+        assertThat(gd.getLon1InMilliDegree()).isEqualTo(expectedGd.getLon1InMilliDegree());
+        assertThat(gd.getLon2InMilliDegree()).isEqualTo(expectedGd.getLon2InMilliDegree());
         assertThat(gd.getResolution()).isEqualTo(expectedGd.getResolution());
         assertThat(gd.getLongitudeIncrement()).isEqualTo(expectedGd.getLongitudeIncrement());
         assertThat(gd.getNumberOfCirclesBetweenPoleAndEquator()).isEqualTo(expectedGd.getNumberOfCirclesBetweenPoleAndEquator());
@@ -88,9 +91,11 @@ public class Grib1GridDescriptionSectionReaderTest {
 
     @Test(dataProvider = "testSetForGausianCoordinateReadOut")
     public void testGaussianReadout(Grib1GridDescriptionSection gridDescriptionSection, byte[] buffer, int offSet, int[] expectedResult, int expectedLength) throws BinaryNumberConversionException {
-        Grib1GridDescriptionSection result = gdsReader.generateNisAndNumberOfPoints(gridDescriptionSection, buffer, offSet);
-        assertThat(result.getNumberOfPoints()).isEqualTo(expectedLength);
-        Grib1LatLonGrib1GridDefinition gridDefinition = (Grib1LatLonGrib1GridDefinition) result.getGridDefinition();
+
+        gdsReader.enrichNisAndNumberOfPoints(gridDescriptionSection, buffer, offSet);
+
+        assertThat(gridDescriptionSection.getNumberOfPoints()).isEqualTo(expectedLength);
+        Grib1LatLonGrib1GridDefinition gridDefinition = (Grib1LatLonGrib1GridDefinition) gridDescriptionSection.getGridDefinition();
         assertThat(gridDefinition.getPointsAlongLatitudeCircleForGaussian()).isEqualTo(expectedResult);
     }
 
@@ -104,12 +109,11 @@ public class Grib1GridDescriptionSectionReaderTest {
         gds.setNumberOfPoints(2140702);
 
         Grib1LatLonGrib1GridDefinition gridDefinition = new Grib1LatLonGrib1GridDefinition();
-        gridDefinition.setNorth(-89.892f);
-        gridDefinition.setSouth(89.892f);
-        gridDefinition.setLat1(89892);
-        gridDefinition.setLat2(-89892);
-        gridDefinition.setLon1(0);
-        gridDefinition.setLon2(359900);
+        gridDefinition.setBoundingBox(new Rectangle(0f, 359.9f, 89.892f, -89.892f));
+        gridDefinition.setLat1InMilliDegree(89892);
+        gridDefinition.setLat2InMilliDegree(-89892);
+        gridDefinition.setLon1InMilliDegree(0);
+        gridDefinition.setLon2InMilliDegree(359900);
         gridDefinition.setResolution(0);
         gridDefinition.setLongitudeIncrement(65.535f);
         gridDefinition.setNumberOfCirclesBetweenPoleAndEquator((short) 640);

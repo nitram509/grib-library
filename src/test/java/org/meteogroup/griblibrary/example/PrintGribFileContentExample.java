@@ -1,5 +1,6 @@
 package org.meteogroup.griblibrary.example;
 
+import org.meteogroup.griblibrary.gis.LatLon;
 import org.meteogroup.griblibrary.grib.GribReaderFactory;
 import org.meteogroup.griblibrary.grib1.Grib1CollectionReader;
 import org.meteogroup.griblibrary.grib1.model.Grib1BinaryDataSection;
@@ -32,20 +33,24 @@ public class PrintGribFileContentExample {
     private void run() throws Exception {
         Optional<Grib1CollectionReader> version1 = new GribReaderFactory().createVersion1(getGribFilename());
 
+        LatLon latLon = new LatLon(39.880218f, 116.367677f);
+
+
         long start = System.currentTimeMillis();
         if (version1.isPresent()) {
             Grib1CollectionReader grib1CollectionReader = version1.get();
             List<Grib1Record> gribRecords = grib1CollectionReader.readAllRecords(getGribFilename());
             for (Grib1Record gribRecord : gribRecords) {
-                printGridDescription(gribRecord.getGridDescription());
-                printProductDefinition(gribRecord.getProductDefinition());
-                printGrid(gribRecord.getBinaryData());
+//                printGridDescription(gribRecord.getGridDescription());
+//                printProductDefinition(gribRecord.getProductDefinition());
+//                printGrid(gribRecord.getBinaryData());
+                new BinaryDataAccessor(gribRecord).getValues(latLon);
             }
         } else {
             throw new IllegalStateException("Sorry, this example just can process GRIB1 file types. But the given file wasn't v1.");
         }
         long end = System.currentTimeMillis();
-        System.out.println("time (ms): " + (end-start));
+        System.out.println("time (ms): " + (end - start));
     }
 
     private void printGridDescription(Grib1GridDescriptionSection gridDescription) {
