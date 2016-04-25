@@ -55,3 +55,10 @@ And for grib2:
 ```
 
 *More information about the library and basics examples on using the library will be added at a later stage in the development*
+
+
+Licenses
+-----------
+
+* The geometry related code is based on Dave Moten's [rtree](https://github.com/davidmoten/rtree) library, [Apache License 2.0](https://github.com/davidmoten/rtree/blob/master/LICENCE).
+

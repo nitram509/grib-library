@@ -6,6 +6,7 @@ import org.meteogroup.griblibrary.util.BitChecker;
 
 import java.util.Arrays;
 
+import static java.util.Arrays.copyOfRange;
 import static org.meteogroup.griblibrary.util.BytesToPrimitiveHelper.bytesToFloatAsIBM;
 import static org.meteogroup.griblibrary.util.BytesToPrimitiveHelper.asInt;
 
@@ -32,19 +33,21 @@ class Grib1BDSReader {
         return asInt(inputValues[POSITION_BDS_LENGTH_1 + offSet], inputValues[POSITION_BDS_LENGTH_2 + offSet], inputValues[POSITION_BDS_LENGTH_3 + offSet]);
     }
 
-    public Grib1BinaryDataSection readBDSValues(byte[] inputValues, int offSet) throws BinaryNumberConversionException {
+    public Grib1BinaryDataSection readBDSValues(byte[] inputValues, int sectionOffset) throws BinaryNumberConversionException {
         Grib1BinaryDataSection binaryDataSection = new Grib1BinaryDataSection();
-        binaryDataSection.setSectionLength(this.readBDSLength(inputValues, offSet));
-        binaryDataSection.setGridPointData(!BitChecker.testBit(inputValues[POSITION_BDS_FLAGS + offSet], GRID_OR_SPHERICAL_BIT));
-        binaryDataSection.setSphericalHarmonicCoefficient(BitChecker.testBit(inputValues[POSITION_BDS_FLAGS + offSet], GRID_OR_SPHERICAL_BIT));
-        binaryDataSection.setSimplePacking(!BitChecker.testBit(inputValues[POSITION_BDS_FLAGS + offSet], SIMPLE_OR_SECOND_ORDER_PACKING_BIT));
-        binaryDataSection.setSecondOrderPacking(BitChecker.testBit(inputValues[POSITION_BDS_FLAGS + offSet], SIMPLE_OR_SECOND_ORDER_PACKING_BIT));
-        binaryDataSection.setDataIsFloats(!BitChecker.testBit(inputValues[POSITION_BDS_FLAGS + offSet], FLOAT_OR_INT_BIT));
-        binaryDataSection.setDataIsInteger(BitChecker.testBit(inputValues[POSITION_BDS_FLAGS + offSet], FLOAT_OR_INT_BIT));
-        binaryDataSection.setBinaryScaleFactor(readBinaryScaleFactor(inputValues[POSITION_BDS_BINARY_SCALE_1 + offSet], inputValues[POSITION_BDS_BINARY_SCALE_2 + offSet]));
-        binaryDataSection.setReferenceValue(bytesToFloatAsIBM(inputValues[POSITION_BDS_REFERENCE_VALUE_1 + offSet], inputValues[POSITION_BDS_REFERENCE_VALUE_2 + offSet], inputValues[POSITION_BDS_REFERENCE_VALUE_3 + offSet], inputValues[POSITION_BDS_REFERENCE_VALUE_4 + offSet]));
-        binaryDataSection.setNumberOfBitsForDatumPoint(inputValues[POSITION_BDS_DATUM + offSet]);
-        binaryDataSection.setPackedValues(this.sliceArrayForGribField(inputValues, POSITION_BDS_SLICE_POINT_FOR_STANDARD_PACKING + offSet, binaryDataSection.getSectionLength() + offSet));
+        binaryDataSection.setSectionLength(this.readBDSLength(inputValues, sectionOffset));
+        binaryDataSection.setGridPointData(!BitChecker.testBit(inputValues[POSITION_BDS_FLAGS + sectionOffset], GRID_OR_SPHERICAL_BIT));
+        binaryDataSection.setSphericalHarmonicCoefficient(BitChecker.testBit(inputValues[POSITION_BDS_FLAGS + sectionOffset], GRID_OR_SPHERICAL_BIT));
+        binaryDataSection.setSimplePacking(!BitChecker.testBit(inputValues[POSITION_BDS_FLAGS + sectionOffset], SIMPLE_OR_SECOND_ORDER_PACKING_BIT));
+        binaryDataSection.setSecondOrderPacking(BitChecker.testBit(inputValues[POSITION_BDS_FLAGS + sectionOffset], SIMPLE_OR_SECOND_ORDER_PACKING_BIT));
+        binaryDataSection.setDataIsFloats(!BitChecker.testBit(inputValues[POSITION_BDS_FLAGS + sectionOffset], FLOAT_OR_INT_BIT));
+        binaryDataSection.setDataIsInteger(BitChecker.testBit(inputValues[POSITION_BDS_FLAGS + sectionOffset], FLOAT_OR_INT_BIT));
+        binaryDataSection.setBinaryScaleFactor(readBinaryScaleFactor(inputValues[POSITION_BDS_BINARY_SCALE_1 + sectionOffset], inputValues[POSITION_BDS_BINARY_SCALE_2 + sectionOffset]));
+        binaryDataSection.setReferenceValue(bytesToFloatAsIBM(inputValues[POSITION_BDS_REFERENCE_VALUE_1 + sectionOffset], inputValues[POSITION_BDS_REFERENCE_VALUE_2 + sectionOffset], inputValues[POSITION_BDS_REFERENCE_VALUE_3 + sectionOffset], inputValues[POSITION_BDS_REFERENCE_VALUE_4 + sectionOffset]));
+        binaryDataSection.setNumberOfBitsForDatumPoint(inputValues[POSITION_BDS_DATUM + sectionOffset]);
+        final int fromOffset = sectionOffset + POSITION_BDS_SLICE_POINT_FOR_STANDARD_PACKING;
+        final int toOffset = sectionOffset + binaryDataSection.getSectionLength();
+        binaryDataSection.setPackedValues(copyOfRange(inputValues, fromOffset, toOffset));
         return binaryDataSection;
     }
 
@@ -54,7 +57,4 @@ class Grib1BDSReader {
         return (short) (neg ? -1 * absoluteValue : absoluteValue);
     }
 
-    public byte[] sliceArrayForGribField(byte[] inputValues, int slicePoint, int bdsLength) {
-        return Arrays.copyOfRange(inputValues, slicePoint, bdsLength + 1);
-    }
 }
