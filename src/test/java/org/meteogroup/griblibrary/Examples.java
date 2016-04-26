@@ -8,22 +8,23 @@ import org.meteogroup.griblibrary.grib1.model.Grib1Record;
 import org.meteogroup.griblibrary.grib2.Grib2CollectionReader;
 import org.meteogroup.griblibrary.grib2.model.Grib2Record;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public class Examples {
 
-    public void example_code_from_README__grib1() throws GribReaderException {
+    public void example_code_from_README__grib1() throws GribReaderException, FileNotFoundException {
         Grib1CollectionReader grib1CollectionReader = new Grib1CollectionReader();
-        List<Grib1Record> coll = grib1CollectionReader.readFileFromFileName("grib1_file.grb");
+        List<Grib1Record> coll = grib1CollectionReader.readAllRecords("grib1_file.grb");
         for (Grib1Record grib1Record : coll) {
             SimplePackingDecoder decoder = new SimplePackingDecoder();
             double[] values = decoder.decodeFromGrib1(grib1Record);
         }
     }
 
-    public void example_code_from_README__grib2() throws GribReaderException {
+    public void example_code_from_README__grib2() throws GribReaderException, FileNotFoundException {
         Grib2CollectionReader grib2CollectionReader = new Grib2CollectionReader();
-        List<Grib2Record> coll = grib2CollectionReader.readFileFromFileName("grib2_file.grb");
+        List<Grib2Record> coll = grib2CollectionReader.readAllRecords("grib2_file.grb");
         for (Grib2Record grib2Record : coll) {
             BoustroPackingDecoder decoder = new BoustroPackingDecoder();
             double[] values = decoder.decodeFromGrib2(grib2Record);

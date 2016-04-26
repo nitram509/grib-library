@@ -44,13 +44,18 @@ public class PrintGribFileContentExample {
 //                printGridDescription(gribRecord.getGridDescription());
 //                printProductDefinition(gribRecord.getProductDefinition());
 //                printGrid(gribRecord.getBinaryData());
-                new BinaryDataAccessor(gribRecord).getValues(latLon);
+                exampleSimpleBinaryAccess(latLon, gribRecord);
             }
         } else {
             throw new IllegalStateException("Sorry, this example just can process GRIB1 file types. But the given file wasn't v1.");
         }
         long end = System.currentTimeMillis();
         System.out.println("time (ms): " + (end - start));
+    }
+
+    private void exampleSimpleBinaryAccess(LatLon latLon, Grib1Record gribRecord) {
+        BinaryDataAccessor binaryDataAccessor = new BinaryDataAccessor(gribRecord);
+        binaryDataAccessor.getValues(latLon);
     }
 
     private void printGridDescription(Grib1GridDescriptionSection gridDescription) {

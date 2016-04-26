@@ -20,7 +20,7 @@ public class Grib2IDS {
     public static final short TYPE_OF_DATA_ANALYSIS = 0;
     public static final short TYPE_OF_DATA_FORECAST = 1;
     
-    //private short id;
+    //private short centerId;
     private int centreId;
     private int subCenterId;
     private short tableVersion;

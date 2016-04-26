@@ -15,7 +15,7 @@ public class DataRepresentationTypeResolver {
             if (representationType.id == dataRepresentationType)
                 return representationType.shortName.length() > 0 ? representationType.shortName : representationType.longName;
         }
-        return "unknown(id=" + dataRepresentationType + ")";
+        return "unknown(centerId=" + dataRepresentationType + ")";
     }
 
 }
